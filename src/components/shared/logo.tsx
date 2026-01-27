@@ -21,7 +21,7 @@ export const Logo = ({ className }: LogoProps) => {
 
   if (!mounted) {
     return (
-      <div className={cn("h-10 w-[150px] animate-pulse bg-muted/20 rounded", className)} />
+      <div className={cn("h-10 w-37.5 animate-pulse bg-muted/20 rounded", className)} />
     );
   }
 

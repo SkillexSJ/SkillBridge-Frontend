@@ -88,7 +88,7 @@ const PopularTutors: React.FC = () => {
                   <TabsTab
                     key={cat}
                     value={cat}
-                    className="text-muted-foreground data-[state=active]:text-foreground text-lg px-0 bg-transparent hover:text-foreground/80 transition-colors"
+                    className="text-muted-foreground data-active:text-foreground text-lg px-0 bg-transparent hover:text-foreground/80 transition-colors"
                   >
                     {cat}
                   </TabsTab>
