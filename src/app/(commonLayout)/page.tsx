@@ -1,4 +1,5 @@
 import Hero from "@/components/Layouts/Hero";
+import { LogoCloud } from "@/components/logo-cloud";
 
 type Booking = {
   id: number;
@@ -20,10 +21,17 @@ export default async function Home() {
 
   return (
     <>
-      <main className="min-h-screen">
+      <main className="min-h-screen bg-background">
         <Hero />
-        <div className="bg-background border-t border-primary h-screen rounded-t-[50%_100px]">
-          <h1>TRUSTED BY</h1>
+        <div className="relative z-20 bg-background rounded-t-[3rem] md:rounded-t-[5rem] -mt-16 pt-16 pb-20 border-t border-primary/10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+          <div className="max-w-7xl mx-auto px-6 text-center">
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-10">
+              Trusted by leading companies and institutions
+            </p>
+            <div className="opacity-70 hover:opacity-100 transition-opacity duration-500">
+              <LogoCloud />
+            </div>
+          </div>
         </div>
       </main>
     </>

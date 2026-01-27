@@ -1,25 +1,18 @@
 "use client";
 
-import React from "react";
-import {
-  ArrowRight,
-  Search,
-  Star,
-  Users,
-  ArrowUpRight,
-  Plus,
-} from "lucide-react";
+import { ArrowRight, Search, Star, Users, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import MagicBento, { MagicCard } from "@/components/MagicBento";
 
 const Hero = () => {
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col justify-center items-center pt-24 pb-12 lg:pt-32 lg:pb-24">
       {/* Background Grid Pattern */}
-      {/* <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_80%_80%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-        
+        {/* Glow Effects */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
-      </div> */}
+      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-10  w-full">
         {/* HERO HEADER CONTENT */}
@@ -69,125 +62,103 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* BENTO GRID */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 max-w-6xl mx-auto">
-          {/* LEFT COLUMN GROUP */}
-          <div className="lg:col-span-7 flex flex-col gap-4 lg:gap-6">
-            {/* Top Row Stats */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-6">
-              {/* Mentors Card */}
-              <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-sm hover:border-zinc-700 transition-colors group">
-                <div className="mb-2 sm:mb-4">
-                  <h3 className="text-2xl sm:text-4xl font-bold text-emerald-400 mb-1">
-                    207K
-                  </h3>
-                  <span className="text-xs sm:text-sm text-zinc-400 font-medium">
-                    Mentors
-                  </span>
+        {/* MAGIC BENTO SECTION */}
+        <div className="w-full max-w-6xl mx-auto">
+          <MagicBento glowColor="0, 178, 98">
+            {/* CARD 1: STATS */}
+            <MagicCard
+              className="col-span-12 md:col-span-4 min-h-62.5 flex flex-col justify-between"
+              glowColor="0, 178, 98"
+            >
+              <div className="space-y-6">
+                <div className="flex items-start justify-between">
+                  <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20">
+                    <Users className="w-6 h-6 text-primary" />
+                  </div>
+                  <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed hidden sm:block">
-                  Expert mentors ready to guide you on your journey.
-                </p>
-              </div>
-
-              {/* Active Users Card */}
-              <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-sm hover:border-zinc-700 transition-colors group">
-                <div className="mb-2 sm:mb-4">
-                  <h3 className="text-2xl sm:text-4xl font-bold text-emerald-400 mb-1">
-                    500K
-                  </h3>
-                  <span className="text-xs sm:text-sm text-zinc-400 font-medium">
-                    Active users
-                  </span>
+                <div>
+                  <h3 className="text-4xl font-bold text-white mb-2">200K+</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Expert mentors helping students globally.
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-zinc-500 leading-relaxed hidden sm:block">
-                  Users who have successfully found their ideal mentor.
-                </p>
               </div>
-            </div>
+              <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                <span className="text-sm font-medium text-white">
+                  Active Learners
+                </span>
+                <span className="text-sm font-bold text-primary">500K+</span>
+              </div>
+            </MagicCard>
 
-            {/* Bottom Row Banner */}
-            <div className="flex-1 bg-zinc-900/40 border border-zinc-800/60 rounded-2xl sm:rounded-3xl p-6 sm:p-8 backdrop-blur-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative overflow-hidden group">
-              {/* Abstract Glow in card */}
-              <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-emerald-500/10 blur-3xl rounded-full group-hover:bg-emerald-500/20 transition-all"></div>
-
+            {/* CARD 2: COMMUNITY */}
+            <MagicCard
+              className="col-span-12 md:col-span-4 min-h-62.5 flex flex-col justify-between"
+              glowColor="0, 178, 98"
+            >
               <div className="relative z-10">
-                <div className="flex items-center gap-1 mb-4">
-                  <div className="flex -space-x-3">
-                    <Image
-                      width={2}
-                      height={8}
-                      className="w-8 h-8 rounded-full border-2 border-zinc-900"
-                      src="https://i.pravatar.cc/100?img=1"
-                      alt="User"
-                    />
-                    <Image
-                      width={2}
-                      height={8}
-                      className="w-8 h-8 rounded-full border-2 border-zinc-900"
-                      src="https://i.pravatar.cc/100?img=2"
-                      alt="User"
-                    />
-                    <Image
-                      width={2}
-                      height={8}
-                      className="w-8 h-8 rounded-full border-2 border-zinc-900"
-                      src="https://i.pravatar.cc/100?img=3"
-                      alt="User"
-                    />
-                  </div>
-                  <div className="w-8 h-8 rounded-full border-2 border-zinc-900 bg-zinc-800 flex items-center justify-center text-[10px] text-zinc-400 font-bold">
-                    <Plus className="w-3 h-3" />
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  Unlock Potential
+                </h3>
+                <p className="text-muted-foreground text-sm mb-6">
+                  Join a community of learners and leaders.
+                </p>
+
+                <div className="flex items-center -space-x-3 mb-4">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="relative w-10 h-10 rounded-full border-2 border-background overflow-hidden"
+                    >
+                      <Image
+                        src={`https://i.pravatar.cc/100?img=${i + 10}`}
+                        alt="User"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                  <div className="w-10 h-10 rounded-full border-2 border-background bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground">
+                    +4k
                   </div>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white uppercase leading-tight tracking-wide">
-                  Unlock <span className="text-emerald-400">your</span> <br />
-                  leadership <br />
-                  potential with us!
-                </h3>
+              </div>
+              <button className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-colors flex items-center justify-center gap-2 group">
+                Join Community{" "}
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </MagicCard>
+
+            {/* CARD 3: BOOKING CTA */}
+            <MagicCard
+              className="col-span-12 md:col-span-4 min-h-62.5 relative group"
+              glowColor="0, 178, 98"
+              clickEffect={true}
+            >
+              <div className="absolute inset-0 z-0">
+                <Image
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop"
+                  alt="Mentoring"
+                  fill
+                  className="object-cover opacity-50 group-hover:opacity-60 transition-opacity duration-500"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent" />
               </div>
 
-              <button className="relative z-10 h-12 w-12 sm:h-14 sm:w-14 rounded-full border border-zinc-600 hover:border-emerald-400 hover:bg-emerald-500/10 flex items-center justify-center transition-all group-hover:scale-110">
-                <ArrowRight className="text-white group-hover:text-emerald-400" />
-              </button>
-            </div>
-          </div>
-
-          {/* RIGHT COLUMN LARGE CARD */}
-          <div className="lg:col-span-5 bg-zinc-900/80 border border-zinc-800/60 rounded-2xl sm:rounded-3xl overflow-hidden relative group min-h-[300px] lg:min-h-0">
-            <div className="absolute inset-0 p-6 sm:p-8 flex flex-col z-20 bg-gradient-to-t from-black/80 via-transparent to-transparent lg:bg-none">
-              <div className="mb-auto">
-                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight">
-                  Book your first <br /> free meeting
+              <div className="relative z-10 h-full flex flex-col justify-end p-2">
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  Book a Session
                 </h3>
-                <p className="text-zinc-400 text-sm">
-                  Get insights into the process and next steps.
+                <p className="text-zinc-300 text-sm mb-6">
+                  Get your first mentorship session for free.
                 </p>
+                <button className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold transition-colors flex items-center justify-center gap-2">
+                  Get Started <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
-
-              <button className="flex items-center gap-2 text-emerald-400 font-medium hover:gap-3 transition-all mt-6 lg:mt-0">
-                Get In Touch <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Image container with mask/positioning */}
-            <div className="absolute right-0 bottom-0 w-[85%] h-[80%] lg:w-full lg:h-[85%] z-10">
-              <img
-                src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Mentor"
-                className="w-full h-full object-cover object-top mask-image-b-fade"
-                style={{
-                  maskImage:
-                    "linear-gradient(to top, black 80%, transparent 100%)",
-                }} // Attempting a fade at top of image
-              />
-              {/* Grayscale filter that removes on hover */}
-              <div className="absolute inset-0 bg-zinc-900/20 mix-blend-multiply group-hover:bg-transparent transition-all duration-500"></div>
-            </div>
-
-            {/* Gradient overlay for text readability on the image bottom */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent pointer-events-none z-10"></div>
-          </div>
+            </MagicCard>
+          </MagicBento>
         </div>
       </div>
     </div>
