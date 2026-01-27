@@ -1,9 +1,9 @@
 "use client";
 import { useScroll } from "@/hooks/use-scroll";
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/shared/logo";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MobileNav } from "@/components/mobile-nav";
+import { MobileNav } from "@/components/shared/mobile-nav";
 
 export const navLinks = [
   {
