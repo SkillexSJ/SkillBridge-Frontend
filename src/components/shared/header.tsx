@@ -4,6 +4,7 @@ import { Logo } from "@/components/shared/logo";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MobileNav } from "@/components/shared/mobile-nav";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 import Link from "next/link";
 
 export const navLinks = [
@@ -38,10 +39,7 @@ export function Header() {
           },
         )}
       >
-        <Link className="rounded-md p-2 hover:bg-accent" href="/">
-          {/* <Logo className="h-4.5" /> */}
-          <h1 className="font-bold">SkillBridge</h1>
-        </Link>
+        <Logo />
         <div className="hidden items-center gap-1 md:flex">
           {navLinks.map((link, i) => (
             <Link
@@ -52,6 +50,7 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          <ThemeToggle />
           <Link
             href="/login"
             className={cn(
@@ -68,7 +67,10 @@ export function Header() {
             Get Started
           </Link>
         </div>
-        <MobileNav />
+        <div className="flex items-center gap-2 md:hidden">
+          <ThemeToggle />
+          <MobileNav />
+        </div>
       </nav>
     </header>
   );

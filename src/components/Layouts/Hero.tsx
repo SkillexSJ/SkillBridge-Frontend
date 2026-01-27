@@ -113,13 +113,13 @@ const Hero = () => {
                   <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-4xl font-bold text-white mb-2">200K+</h3>
+                  <h3 className="text-4xl font-bold text-foreground mb-2">200K+</h3>
                   <p className="text-muted-foreground text-sm">
                     Verified expert mentors globally.
                   </p>
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-white/5">
+              <div className="mt-4 pt-4 border-t border-border">
                 <span className="text-xs font-medium text-primary uppercase tracking-wider">
                   Expert Network
                 </span>
@@ -139,13 +139,13 @@ const Hero = () => {
                   <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-4xl font-bold text-white mb-2">500K+</h3>
+                  <h3 className="text-4xl font-bold text-foreground mb-2">500K+</h3>
                   <p className="text-muted-foreground text-sm">
                     Active learners mastering new skills.
                   </p>
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-white/5">
+              <div className="mt-4 pt-4 border-t border-border">
                 <span className="text-xs font-medium text-primary uppercase tracking-wider">
                   Global Community
                 </span>
@@ -191,7 +191,7 @@ const Hero = () => {
                   <div className="p-3 w-fit rounded-2xl bg-primary/10 border border-primary/20 mb-6">
                     <Layout className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white mb-2">
+                  <h3 className="text-2xl font-bold text-foreground mb-2">
                     Explore Categories
                   </h3>
                   <p className="text-muted-foreground text-sm max-w-md">
@@ -204,7 +204,7 @@ const Hero = () => {
                     (cat) => (
                       <span
                         key={cat}
-                        className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-zinc-300 hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer"
+                        className="px-4 py-2 rounded-xl bg-accent/50 border border-border text-sm text-foreground hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer"
                       >
                         {cat}
                       </span>
