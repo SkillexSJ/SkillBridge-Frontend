@@ -5,6 +5,7 @@ import { MenuIcon, XIcon } from "lucide-react";
 import React from "react";
 import { createPortal } from "react-dom";
 import { navLinks } from "@/components/shared/header";
+import Link from "next/link";
 
 export function MobileNav() {
   const [open, setOpen] = React.useState(false);
@@ -58,23 +59,34 @@ export function MobileNav() {
             >
               <div className="grid gap-y-2">
                 {navLinks.map((link) => (
-                  <a
+                  <Link
                     className={buttonVariants({
                       variant: "ghost",
                       className: "justify-start",
                     })}
                     href={link.href}
                     key={link.label}
+                    onClick={() => setOpen(false)}
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 ))}
               </div>
               <div className="mt-12 flex flex-col gap-2">
-                <Button className="w-full" variant="outline">
+                <Link
+                  href="/login"
+                  className={cn(buttonVariants({ variant: "outline" }), "w-full")}
+                  onClick={() => setOpen(false)}
+                >
                   Sign In
-                </Button>
-                <Button className="w-full">Get Started</Button>
+                </Link>
+                <Link
+                  href="/register"
+                  className={cn(buttonVariants(), "w-full")}
+                  onClick={() => setOpen(false)}
+                >
+                  Get Started
+                </Link>
               </div>
             </div>
           </div>,

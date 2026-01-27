@@ -8,6 +8,7 @@ import {
   Users,
   ArrowUpRight,
   Calendar as CalendarIcon,
+  Layout,
 } from "lucide-react";
 import Image from "next/image";
 import MagicBento, { MagicCard } from "@/components/MagicBento";
@@ -99,9 +100,9 @@ const Hero = () => {
         {/* MAGIC BENTO SECTION */}
         <div className="w-full max-w-6xl mx-auto">
           <MagicBento glowColor="0, 178, 98">
-            {/* CARD 1: STATS */}
+            {/* CARD 1: MENTOR STATS */}
             <MagicCard
-              className="col-span-12 md:col-span-4 min-h-62.5 flex flex-col justify-between"
+              className="min-h-62.5 flex flex-col justify-between"
               glowColor="0, 178, 98"
             >
               <div className="space-y-6">
@@ -114,59 +115,46 @@ const Hero = () => {
                 <div>
                   <h3 className="text-4xl font-bold text-white mb-2">200K+</h3>
                   <p className="text-muted-foreground text-sm">
-                    Expert mentors helping students globally.
+                    Verified expert mentors globally.
                   </p>
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                <span className="text-sm font-medium text-white">
-                  Active Learners
+              <div className="mt-4 pt-4 border-t border-white/5">
+                <span className="text-xs font-medium text-primary uppercase tracking-wider">
+                  Expert Network
                 </span>
-                <span className="text-sm font-bold text-primary">500K+</span>
               </div>
             </MagicCard>
 
-            {/* CARD 2: COMMUNITY */}
+            {/* CARD 2: USER STATS */}
             <MagicCard
-              className="col-span-12 md:col-span-4 min-h-62.5 flex flex-col justify-between"
+              className="min-h-62.5 flex flex-col justify-between"
               glowColor="0, 178, 98"
             >
-              <div className="relative z-10">
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  Unlock Potential
-                </h3>
-                <p className="text-muted-foreground text-sm mb-6">
-                  Join a community of learners and leaders.
-                </p>
-
-                <div className="flex items-center -space-x-3 mb-4">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="relative w-10 h-10 rounded-full border-2 border-background overflow-hidden"
-                    >
-                      <Image
-                        src={`https://i.pravatar.cc/100?img=${i + 10}`}
-                        alt="User"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  ))}
-                  <div className="w-10 h-10 rounded-full border-2 border-background bg-primary flex items-center justify-center text-xs font-bold text-primary-foreground">
-                    +4k
+              <div className="space-y-6">
+                <div className="flex items-start justify-between">
+                  <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20">
+                    <Star className="w-6 h-6 text-primary" />
                   </div>
+                  <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div>
+                  <h3 className="text-4xl font-bold text-white mb-2">500K+</h3>
+                  <p className="text-muted-foreground text-sm">
+                    Active learners mastering new skills.
+                  </p>
                 </div>
               </div>
-              <button className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium transition-colors flex items-center justify-center gap-2 group">
-                Join Community{" "}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+              <div className="mt-4 pt-4 border-t border-white/5">
+                <span className="text-xs font-medium text-primary uppercase tracking-wider">
+                  Global Community
+                </span>
+              </div>
             </MagicCard>
 
-            {/* CARD 3: BOOKING CTA */}
+            {/* CARD 3: BOOKING CTA (Right Vertical) */}
             <MagicCard
-              className="col-span-12 md:col-span-4 min-h-62.5 relative group"
+              className="min-h-62.5 relative group"
               glowColor="0, 178, 98"
               clickEffect={true}
             >
@@ -175,9 +163,9 @@ const Hero = () => {
                   src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=800&auto=format&fit=crop"
                   alt="Mentoring"
                   fill
-                  className="object-cover opacity-50 group-hover:opacity-60 transition-opacity duration-500"
+                  className="object-cover opacity-40 group-hover:opacity-50 transition-opacity duration-500"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/40 to-transparent" />
               </div>
 
               <div className="relative z-10 h-full flex flex-col justify-end p-2">
@@ -185,11 +173,44 @@ const Hero = () => {
                   Book a Session
                 </h3>
                 <p className="text-zinc-300 text-sm mb-6">
-                  Get your first mentorship session for free.
+                  Get your first mentorship session for free. Instant booking with top experts.
                 </p>
-                <button className="w-full py-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold transition-colors flex items-center justify-center gap-2">
+                <button className="w-full py-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold transition-all shadow-lg shadow-primary/20 active:scale-95 flex items-center justify-center gap-2">
                   Get Started <ArrowRight className="w-4 h-4" />
                 </button>
+              </div>
+            </MagicCard>
+
+            {/* CARD 4: LEADERSHIP BRAND / CATEGORIES (Bottom Left) */}
+            <MagicCard
+              className="min-h-62.5 flex flex-col justify-between"
+              glowColor="0, 178, 98"
+            >
+              <div className="flex flex-row h-full items-center justify-between gap-8">
+                <div className="flex-1">
+                  <div className="p-3 w-fit rounded-2xl bg-primary/10 border border-primary/20 mb-6">
+                    <Layout className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    Explore Categories
+                  </h3>
+                  <p className="text-muted-foreground text-sm max-w-md">
+                    Choose from over 50+ subjects and professional skills taught by industry leaders.
+                  </p>
+                </div>
+                
+                <div className="flex-1 flex flex-wrap gap-3 justify-end">
+                  {["Development", "Design", "Marketing", "Business", "Music", "Science", "Math", "English"].map(
+                    (cat) => (
+                      <span
+                        key={cat}
+                        className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-zinc-300 hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer"
+                      >
+                        {cat}
+                      </span>
+                    )
+                  )}
+                </div>
               </div>
             </MagicCard>
           </MagicBento>

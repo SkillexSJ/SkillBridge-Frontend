@@ -1,22 +1,19 @@
 "use client";
 import { useScroll } from "@/hooks/use-scroll";
 import { Logo } from "@/components/shared/logo";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MobileNav } from "@/components/shared/mobile-nav";
+import Link from "next/link";
 
 export const navLinks = [
   {
-    label: "Features",
-    href: "#",
+    label: "Home",
+    href: "/",
   },
   {
-    label: "Pricing",
-    href: "#",
-  },
-  {
-    label: "About",
-    href: "#",
+    label: "Find Tutors",
+    href: "/tutors",
   },
 ];
 
@@ -41,24 +38,35 @@ export function Header() {
           },
         )}
       >
-        <a className="rounded-md p-2 hover:bg-accent" href="#">
+        <Link className="rounded-md p-2 hover:bg-accent" href="/">
           {/* <Logo className="h-4.5" /> */}
           <h1 className="font-bold">SkillBridge</h1>
-        </a>
+        </Link>
         <div className="hidden items-center gap-1 md:flex">
           {navLinks.map((link, i) => (
-            <a
+            <Link
               className={buttonVariants({ variant: "ghost" })}
               href={link.href}
               key={i}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
-          <Button className="rounded-full" variant="outline">
+          <Link
+            href="/login"
+            className={cn(
+              buttonVariants({ variant: "outline" }),
+              "rounded-full",
+            )}
+          >
             Sign In
-          </Button>
-          <Button className="rounded-full">Get Started</Button>
+          </Link>
+          <Link
+            href="/register"
+            className={cn(buttonVariants(), "rounded-full")}
+          >
+            Get Started
+          </Link>
         </div>
         <MobileNav />
       </nav>
