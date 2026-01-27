@@ -42,7 +42,8 @@ export function Header() {
         )}
       >
         <a className="rounded-md p-2 hover:bg-accent" href="#">
-          <Logo className="h-4.5" />
+          {/* <Logo className="h-4.5" /> */}
+          <h1 className="font-bold">SkillBridge</h1>
         </a>
         <div className="hidden items-center gap-1 md:flex">
           {navLinks.map((link, i) => (
@@ -54,8 +55,10 @@ export function Header() {
               {link.label}
             </a>
           ))}
-          <Button variant="outline">Sign In</Button>
-          <Button>Get Started</Button>
+          <Button className="rounded-full" variant="outline">
+            Sign In
+          </Button>
+          <Button className="rounded-full">Get Started</Button>
         </div>
         <MobileNav />
       </nav>
