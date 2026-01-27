@@ -1,18 +1,36 @@
 "use client";
 
-import { ArrowRight, Search, Star, Users, ArrowUpRight } from "lucide-react";
+import React, { useState } from "react";
+import {
+  ArrowRight,
+  Search,
+  Star,
+  Users,
+  ArrowUpRight,
+  Calendar as CalendarIcon,
+} from "lucide-react";
 import Image from "next/image";
 import MagicBento, { MagicCard } from "@/components/MagicBento";
+import { Input } from "@/components/ui/input";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const Hero = () => {
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col justify-center items-center pt-24 pb-12 lg:pt-32 lg:pb-24">
       {/* Background Grid Pattern */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
+      {/* <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_80%_80%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-        {/* Glow Effects */}
+
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
-      </div>
+      </div> */}
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-10  w-full">
         {/* HERO HEADER CONTENT */}
@@ -38,23 +56,39 @@ const Hero = () => {
           </p>
 
           {/* Search Bar */}
-          <div className="w-full max-w-3xl mx-auto p-2 bg-background/80 border border-primary/20 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center backdrop-blur-md shadow-xl shadow-primary/5 gap-2">
+          <div className="w-full max-w-3xl mx-auto p-2 bg-background/80 border border-primary/20 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center backdrop-blur-md shadow-xl shadow-primary/5 gap-2 relative z-50">
             <div className="flex-1 flex items-center gap-2 px-4 w-full border-b md:border-b-0 md:border-r border-primary/10 py-2 md:py-0">
               <Search className="w-5 h-5 text-muted-foreground" />
-              <input
+              <Input
                 type="text"
                 placeholder="What do you want to learn?"
-                className="w-full bg-transparent border-none text-foreground placeholder-muted-foreground focus:ring-0 text-sm sm:text-base py-1"
+                className="border-none shadow-none focus-visible:ring-0 px-0 text-base h-auto placeholder:text-muted-foreground"
               />
             </div>
-            <div className="flex-1 flex items-center gap-2 px-4 w-full py-2 md:py-0">
-              <input
-                type="text"
-                placeholder="Select Date"
-                onFocus={(e) => (e.target.type = "date")}
-                onBlur={(e) => (e.target.type = "text")}
-                className="w-full bg-transparent border-none text-foreground placeholder-muted-foreground focus:ring-0 text-sm sm:text-base py-1"
-              />
+            <div className="flex-1 flex items-center gap-2 px-4 w-full py-2 md:py-0 relative">
+              <CalendarIcon className="w-5 h-5 text-muted-foreground" />
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Input
+                    type="text"
+                    readOnly
+                    placeholder="Select Date"
+                    value={date ? date.toLocaleDateString() : ""}
+                    className="border-none shadow-none focus-visible:ring-0 px-0 text-base h-auto placeholder:text-muted-foreground cursor-pointer"
+                  />
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 border-none bg-transparent shadow-none" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={(d) => {
+                      setDate(d);
+                      setOpen(false);
+                    }}
+                    className="rounded-xl border bg-background shadow-2xl"
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
             <button className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-3 rounded-xl md:rounded-full transition-all shadow-lg shadow-primary/20 active:scale-95">
               Search

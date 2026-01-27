@@ -2,20 +2,18 @@ import { InfiniteSlider } from "@/components/ui/infinite-slider";
 
 export function LogoCloud() {
   return (
-    <div className="w-full [mask-image:linear-gradient(to_right,transparent,black,transparent)] overflow-hidden py-6">
-      <InfiniteSlider gap={48} reverse speed={40}>
+    <div className="mask-[linear-gradient(to_right,transparent,black,transparent)] overflow-hidden py-4">
+      <InfiniteSlider gap={42} reverse speed={80} speedOnHover={25}>
         {logos.map((logo) => (
-          <div
+          <img
+            alt={logo.alt}
+            className="pointer-events-none h-4 select-none md:h-5 dark:brightness-0 dark:invert"
+            height="auto"
             key={`logo-${logo.alt}`}
-            className="flex items-center justify-center px-4"
-          >
-            <img
-              alt={logo.alt}
-              className="h-6 md:h-7 w-auto object-contain grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300 pointer-events-none select-none dark:invert"
-              loading="lazy"
-              src={logo.src}
-            />
-          </div>
+            loading="lazy"
+            src={logo.src}
+            width="auto"
+          />
         ))}
       </InfiniteSlider>
     </div>
@@ -24,16 +22,16 @@ export function LogoCloud() {
 
 const logos = [
   {
-    src: "https://storage.efferd.com/logo/nvidia-wordmark.svg",
-    alt: "Nvidia Logo",
+    src: "coursera.svg",
+    alt: "Coursera Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/supabase-wordmark.svg",
-    alt: "Supabase Logo",
+    src: "udemy.svg",
+    alt: "Udemy Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/openai-wordmark.svg",
-    alt: "OpenAI Logo",
+    src: "khan_academy.svg",
+    alt: "Khan Academy Logo",
   },
   {
     src: "https://storage.efferd.com/logo/turso-wordmark.svg",
