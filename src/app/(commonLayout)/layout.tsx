@@ -1,4 +1,4 @@
-import { Footer } from "@/components/shared/footer";
+import Footer from "@/components/shared/footer";
 import { Header } from "@/components/shared/header";
 
 export default function CommonLayout({
@@ -7,7 +7,7 @@ export default function CommonLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex min-h-screen flex-col max-w-fit mx-auto">
+    <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />

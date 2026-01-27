@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   ArrowRight,
   Search,
@@ -26,13 +26,6 @@ const Hero = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden flex flex-col justify-center items-center pt-24 pb-12 lg:pt-32 lg:pb-24">
-      {/* Background Grid Pattern */}
-      {/* <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_80%_80%_at_50%_50%,#000_70%,transparent_100%)]"></div>
-
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-200 h-200 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
-      </div> */}
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-10  w-full">
         {/* HERO HEADER CONTENT */}
         <div className="flex flex-col items-center text-center mb-12 lg:mb-16">
@@ -57,13 +50,13 @@ const Hero = () => {
           </p>
 
           {/* Search Bar */}
-          <div className="w-full max-w-3xl mx-auto p-2 bg-background/80 border border-primary/20 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center backdrop-blur-md shadow-xl shadow-primary/5 gap-2 relative z-50">
+          <div className="w-full max-w-2xl   mx-auto p-2 bg-background/80 border border-primary/20 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center backdrop-blur-md shadow-xl shadow-primary/5 gap-2 relative z-50">
             <div className="flex-1 flex items-center gap-2 px-4 w-full border-b md:border-b-0 md:border-r border-primary/10 py-2 md:py-0">
               <Search className="w-5 h-5 text-muted-foreground" />
               <Input
                 type="text"
                 placeholder="What do you want to learn?"
-                className="border-none shadow-none focus-visible:ring-0 px-0 text-base h-auto placeholder:text-muted-foreground"
+                className="border-none shadow-none  focus-visible:ring-0 px-0 text-base h-auto placeholder:text-muted-foreground"
               />
             </div>
             <div className="flex-1 flex items-center gap-2 px-4 w-full py-2 md:py-0 relative">
@@ -75,10 +68,13 @@ const Hero = () => {
                     readOnly
                     placeholder="Select Date"
                     value={date ? date.toLocaleDateString() : ""}
-                    className="border-none shadow-none focus-visible:ring-0 px-0 text-base h-auto placeholder:text-muted-foreground cursor-pointer"
+                    className="border-none  shadow-none focus-visible:ring-0 px-0 text-base h-auto placeholder:text-muted-foreground cursor-pointer"
                   />
                 </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 border-none bg-transparent shadow-none" align="start">
+                <PopoverContent
+                  className="w-auto p-0 border-none  shadow-none"
+                  align="start"
+                >
                   <Calendar
                     mode="single"
                     selected={date}
@@ -86,7 +82,7 @@ const Hero = () => {
                       setDate(d);
                       setOpen(false);
                     }}
-                    className="rounded-xl border bg-background shadow-2xl"
+                    className="rounded-xl border shadow-2xl"
                   />
                 </PopoverContent>
               </Popover>
@@ -113,7 +109,9 @@ const Hero = () => {
                   <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-4xl font-bold text-foreground mb-2">200K+</h3>
+                  <h3 className="text-4xl font-bold text-foreground mb-2">
+                    200K+
+                  </h3>
                   <p className="text-muted-foreground text-sm">
                     Verified expert mentors globally.
                   </p>
@@ -139,7 +137,9 @@ const Hero = () => {
                   <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-4xl font-bold text-foreground mb-2">500K+</h3>
+                  <h3 className="text-4xl font-bold text-foreground mb-2">
+                    500K+
+                  </h3>
                   <p className="text-muted-foreground text-sm">
                     Active learners mastering new skills.
                   </p>
@@ -173,7 +173,8 @@ const Hero = () => {
                   Book a Session
                 </h3>
                 <p className="text-zinc-300 text-sm mb-6">
-                  Get your first mentorship session for free. Instant booking with top experts.
+                  Get your first mentorship session for free. Instant booking
+                  with top experts.
                 </p>
                 <button className="w-full py-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-bold transition-all shadow-lg shadow-primary/20 active:scale-95 flex items-center justify-center gap-2">
                   Get Started <ArrowRight className="w-4 h-4" />
@@ -195,21 +196,29 @@ const Hero = () => {
                     Explore Categories
                   </h3>
                   <p className="text-muted-foreground text-sm max-w-md">
-                    Choose from over 50+ subjects and professional skills taught by industry leaders.
+                    Choose from over 50+ subjects and professional skills taught
+                    by industry leaders.
                   </p>
                 </div>
-                
+
                 <div className="flex-1 flex flex-wrap gap-3 justify-end">
-                  {["Development", "Design", "Marketing", "Business", "Music", "Science", "Math", "English"].map(
-                    (cat) => (
-                      <span
-                        key={cat}
-                        className="px-4 py-2 rounded-xl bg-accent/50 border border-border text-sm text-foreground hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer"
-                      >
-                        {cat}
-                      </span>
-                    )
-                  )}
+                  {[
+                    "Development",
+                    "Design",
+                    "Marketing",
+                    "Business",
+                    "Music",
+                    "Science",
+                    "Math",
+                    "English",
+                  ].map((cat) => (
+                    <span
+                      key={cat}
+                      className="px-4 py-2 rounded-xl bg-accent/50 border border-border text-sm text-foreground hover:border-primary/50 hover:bg-primary/5 transition-colors cursor-pointer"
+                    >
+                      {cat}
+                    </span>
+                  ))}
                 </div>
               </div>
             </MagicCard>
