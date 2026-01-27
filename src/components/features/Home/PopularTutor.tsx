@@ -69,16 +69,13 @@ const PopularTutors: React.FC = () => {
   return (
     <section className="py-20 relative overflow-hidden">
       {/* Background Grid Pattern for texture */}
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-20">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#3f3f4620_1px,transparent_1px),linear-gradient(to_bottom,#3f3f4620_1px,transparent_1px)] bg-size-[40px_40px]"></div>
-      </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Tabs defaultValue="All" className="flex flex-col gap-12">
           {/* Header & Filters */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground tracking-tight">
-              Popular Mentors
+            <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground">
+              Popular <span className="text-primary">Mentors</span>
             </h2>
 
             {/* Filter Tabs */}

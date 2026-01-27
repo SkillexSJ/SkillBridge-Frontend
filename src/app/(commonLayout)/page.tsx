@@ -2,6 +2,7 @@ import PopularTutors from "@/components/features/Home/PopularTutor";
 import FeaturedCategory from "@/components/features/Home/FeaturedCategory";
 import Hero from "@/components/Layouts/Hero";
 import { LogoCloud } from "@/components/logo-cloud";
+import { TestimonialsMarqueeDemo2 } from "@/components/features/Home/Testimonials";
 
 export default async function Home() {
   return (
@@ -23,6 +24,8 @@ export default async function Home() {
           <FeaturedCategory />
 
           <PopularTutors />
+
+          <TestimonialsMarqueeDemo2 />
         </section>
       </main>
     </>

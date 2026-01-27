@@ -95,8 +95,8 @@ const FeaturedCategory = () => {
     <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
         <div className="space-y-4">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-            Explore Top Categories
+          <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground mb-4">
+            Explore Top <span className="text-primary">Categories</span>
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl">
             Explore our most popular categories and find the perfect mentor to
