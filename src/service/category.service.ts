@@ -1,65 +1,38 @@
-import { Category, Response } from "@/types/types";
+/**
+ * LIB
+ */
+import { apiClient, FetchOptions } from "@/lib/api-client";
 
-// Fallback to localhost:5000 if env var is not set
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+/**
+ * TYPES
+ */
+import { ApiResponse, Category } from "@/types/types";
 
-export const getAllCategories = async (): Promise<Response<Category[]>> => {
-  try {
-    const res = await fetch(`${API_URL}/categories`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-store", // Ensure fresh data
-    });
+export const getAllCategories = async (
+  params?: {
+    limit?: number;
+    page?: number;
+  },
+  options?: FetchOptions,
+): Promise<ApiResponse<Category[]>> => {
+  const queryParams = new URLSearchParams();
+  // Limit
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+  // Page
+  if (params?.page) queryParams.append("page", params.page.toString());
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch categories");
-    }
-
-    const result = await res.json();
-    return result;
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    throw error;
-  }
+  const queryString = queryParams.toString();
+  const endpoint = `/categories${queryString ? `?${queryString}` : ""}`;
+  return apiClient.get<ApiResponse<Category[]>>(endpoint, options);
 };
 
 export const createCategory = async (
   data: Partial<Category>,
 ): Promise<Category> => {
-  try {
-    const res = await fetch(`${API_URL}/categories`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to create category");
-    }
-
-    const result = await res.json();
-    return result.data;
-  } catch (error) {
-    console.error("Error creating category:", error);
-    throw error;
-  }
+  const result = await apiClient.post<{ data: Category }>("/categories", data);
+  return result.data;
 };
 
 export const deleteCategory = async (id: string): Promise<void> => {
-  try {
-    const res = await fetch(`${API_URL}/categories/${id}`, {
-      method: "DELETE",
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to delete category");
-    }
-  } catch (error) {
-    console.error("Error deleting category:", error);
-    throw error;
-  }
+  return apiClient.delete(`/categories/${id}`);
 };
