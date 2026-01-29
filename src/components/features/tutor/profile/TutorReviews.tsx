@@ -1,8 +1,19 @@
+/**
+ * NODE PACKAGES
+ */
 import React from "react";
 import { Star } from "lucide-react";
 
+/**
+ * TYPES
+ */
+import { Review } from "@/types/tutor.types";
+
+/**
+ * INTERFACE
+ */
 interface TutorReviewsProps {
-  reviews: any[];
+  reviews: Review[];
   averageRating: number;
 }
 
@@ -11,7 +22,7 @@ export const TutorReviews: React.FC<TutorReviewsProps> = ({
   averageRating,
 }) => {
   return (
-    <div className="text-white">
+    <div className="text-foreground">
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-2">Reviews ({reviews.length})</h2>
         <div className="flex items-center gap-2">
@@ -21,8 +32,8 @@ export const TutorReviews: React.FC<TutorReviewsProps> = ({
                 key={star}
                 className={`w-5 h-5 ${
                   star <= averageRating
-                    ? "text-emerald-500 fill-emerald-500"
-                    : "text-zinc-700"
+                    ? "text-primary fill-primary"
+                    : "text-muted-foreground/30"
                 }`}
               />
             ))}
@@ -34,20 +45,20 @@ export const TutorReviews: React.FC<TutorReviewsProps> = ({
       </div>
 
       {reviews.length === 0 ? (
-        <div className="p-8 bg-zinc-900 border border-zinc-800 rounded-2xl text-center text-zinc-400">
+        <div className="p-8 bg-card border border-border rounded-2xl text-center text-muted-foreground">
           No reviews yet
         </div>
       ) : (
         <div className="space-y-4">
-          {reviews.map((review: any) => (
+          {reviews.map((review: Review) => (
             <div
               key={review.id}
-              className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6"
+              className="bg-card border border-border rounded-2xl p-6"
             >
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h4 className="font-semibold text-white">
-                    {review.user?.name || "Anonymous"}
+                  <h4 className="font-semibold text-foreground">
+                    {review.student?.name || "Anonymous"}
                   </h4>
                   <div className="flex items-center gap-1 mt-1">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -55,18 +66,18 @@ export const TutorReviews: React.FC<TutorReviewsProps> = ({
                         key={star}
                         className={`w-4 h-4 ${
                           star <= review.rating
-                            ? "text-emerald-500 fill-emerald-500"
-                            : "text-zinc-700"
+                            ? "text-primary fill-primary"
+                            : "text-muted-foreground/30"
                         }`}
                       />
                     ))}
                   </div>
                 </div>
-                <span className="text-sm text-zinc-500">
+                <span className="text-sm text-muted-foreground">
                   {new Date(review.createdAt).toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-zinc-400">{review.comment}</p>
+              <p className="text-muted-foreground">{review.comment}</p>
             </div>
           ))}
         </div>
