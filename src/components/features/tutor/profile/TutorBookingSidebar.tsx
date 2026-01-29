@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { TutorDetailResponse } from "@/types/tutor.types";
-import { Clock, CheckCircle2, ArrowRight } from "lucide-react";
+import { Clock, CheckCircle2, ArrowRight, Loader2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { createBooking } from "@/service/booking.service";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { format } from "date-fns";
 
 interface TutorBookingSidebarProps {
   tutor: TutorDetailResponse;
@@ -13,19 +17,69 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
   tutor,
   availabilitySlots,
 }) => {
+  const router = useRouter();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
+  const [isBooking, setIsBooking] = useState(false);
 
-  const timeSlots = [
-    "09:00",
-    "10:00",
-    "11:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
-  ];
+  // Generate available time slots based on selected date and tutor's availability
+  const timeSlots = useMemo(() => {
+    if (!date || !availabilitySlots.length) return [];
+
+    const dayOfWeek = date.getDay(); // 0-6 (Sun-Sat)
+    const availableSlotsForDay = availabilitySlots.filter(
+      (slot) => slot.dayOfWeek === dayOfWeek
+    );
+
+    if (!availableSlotsForDay.length) return [];
+
+    const slots: string[] = [];
+
+    availableSlotsForDay.forEach((slot: any) => {
+      // Parse start and end times (assuming "HH:mm" format or ISO string)
+      // The backend stores them as Date objects (1970-01-01T...), so we might get ISO strings
+      const start = new Date(slot.startTime);
+      const end = new Date(slot.endTime);
+
+      let currentHour = start.getHours();
+      const endHour = end.getHours();
+
+      while (currentHour < endHour) {
+        const timeString = `${currentHour.toString().padStart(2, "0")}:00`;
+        slots.push(timeString);
+        currentHour++;
+      }
+    });
+
+    // Sort slots just in case
+    return slots.sort();
+  }, [date, availabilitySlots]);
+
+  const handleBooking = async () => {
+    if (!date || !selectedTimeSlot) return;
+
+    setIsBooking(true);
+    try {
+      // Calculate endTime (assuming 1 hour sessions for now)
+      const [hours, minutes] = selectedTimeSlot.split(":").map(Number);
+      const endTime = `${(hours + 1).toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+
+      await createBooking({
+        tutorProfileId: tutor.id,
+        sessionDate: format(date, "yyyy-MM-dd"),
+        startTime: selectedTimeSlot,
+        endTime: endTime,
+        totalPrice: Number(tutor.hourlyRate),
+      });
+
+      toast.success("Booking request sent successfully!");
+      router.push("/dashboard/bookings"); // Redirect to bookings page
+    } catch (error: any) {
+      toast.error(error.message || "Failed to book session");
+    } finally {
+      setIsBooking(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -74,7 +128,7 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
                 Timezone
               </span>
               <button className="text-emerald-400 text-xs font-bold hover:underline flex items-center gap-1 justify-end">
-                IST (GMT+5:30)
+                Local Time
               </button>
             </div>
           </div>
@@ -84,7 +138,11 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
             <Calendar
               mode="single"
               selected={date}
-              onSelect={setDate}
+              onSelect={(d) => {
+                setDate(d);
+                setSelectedTimeSlot(null); // Reset time slot when date changes
+              }}
+              disabled={(d) => d < new Date(new Date().setHours(0, 0, 0, 0))}
               className="rounded-md border-none text-zinc-300"
               classNames={{
                 head_cell: "text-zinc-500 font-normal",
@@ -105,32 +163,49 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
           {/* Time Slots */}
           <div className="mb-8">
             <span className="text-zinc-300 font-semibold text-sm block mb-3">
-              Available Slots
+              {date ? format(date, "EEEE, MMMM d") : "Select a date"}
             </span>
-            <div className="grid grid-cols-3 gap-2">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => setSelectedTimeSlot(time)}
-                  className={`py-2.5 px-2 rounded-xl text-sm font-medium border transition-all duration-200 ${
-                    selectedTimeSlot === time
-                      ? "bg-emerald-500/20 border-emerald-500 text-emerald-400"
-                      : "bg-black border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
+            
+            {timeSlots.length > 0 ? (
+              <div className="grid grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                {timeSlots.map((time) => (
+                  <button
+                    key={time}
+                    onClick={() => setSelectedTimeSlot(time)}
+                    className={cn(
+                      "py-2.5 px-2 rounded-xl text-sm font-medium border transition-all duration-200",
+                      selectedTimeSlot === time
+                        ? "bg-emerald-500/20 border-emerald-500 text-emerald-400"
+                        : "bg-black border-zinc-800 text-zinc-400 hover:border-zinc-600 hover:text-white"
+                    )}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-6 text-zinc-500 text-sm bg-black/20 rounded-xl border border-dashed border-zinc-800">
+                No slots available for this day
+              </div>
+            )}
           </div>
 
           {/* CTA */}
           <button
-            disabled={!selectedTimeSlot || !date}
+            onClick={handleBooking}
+            disabled={!selectedTimeSlot || !date || isBooking}
             className="w-full bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-black font-bold text-lg py-4 rounded-xl transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 group"
           >
-            Schedule Meeting
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            {isBooking ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" /> Processing...
+              </>
+            ) : (
+              <>
+                Schedule Meeting
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
 
           <div className="mt-4 flex items-center justify-center gap-2 text-zinc-600 text-xs">

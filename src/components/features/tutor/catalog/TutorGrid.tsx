@@ -1,7 +1,21 @@
+/**
+ * NODE PACKAGES
+ */
 import React from "react";
-import { TutorResponse } from "@/service/tutor.service";
+
+/**
+ * COMPONENTS
+ */
 import { TutorCard } from "./TutorCard";
 
+/**
+ * TYPES
+ */
+import { TutorResponse } from "@/types/tutor.types";
+
+/**
+ * INTERFACES
+ */
 interface TutorGridProps {
   tutors: TutorResponse[];
   onClearFilters: () => void;

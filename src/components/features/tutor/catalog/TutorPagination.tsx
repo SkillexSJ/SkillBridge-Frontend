@@ -1,4 +1,11 @@
+/**
+ * NODE PACKAGES
+ */
 import React from "react";
+
+/**
+ * COMPONENTS
+ */
 import {
   Pagination,
   PaginationContent,
@@ -9,6 +16,9 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+/**
+ * INTERFACES
+ */
 interface TutorPaginationProps {
   currentPage: number;
   totalPages: number;
@@ -24,7 +34,7 @@ export const TutorPagination: React.FC<TutorPaginationProps> = ({
   totalItems,
   itemsPerPage,
 }) => {
-  // Generate page numbers to display
+  // Generating page numbers
   const getPageNumbers = () => {
     const delta = 2;
     const range = [];
@@ -57,14 +67,14 @@ export const TutorPagination: React.FC<TutorPaginationProps> = ({
   const pages = getPageNumbers();
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between py-8 border-t border-zinc-900 gap-4 mt-8">
-      <span className="text-zinc-500 text-sm font-medium">
+    <div className="flex flex-col md:flex-row items-center justify-between py-8 border-t border-border gap-4 mt-8">
+      <span className="text-muted-foreground text-sm font-medium">
         Viewing{" "}
-        <span className="text-white">
+        <span className="text-foreground">
           {(currentPage - 1) * itemsPerPage + 1}-
           {Math.min(currentPage * itemsPerPage, totalItems)}
         </span>{" "}
-        of <span className="text-white">{totalItems}</span> tutors
+        of <span className="text-foreground">{totalItems}</span> tutors
       </span>
 
       <Pagination className="w-auto mx-0">
@@ -78,8 +88,8 @@ export const TutorPagination: React.FC<TutorPaginationProps> = ({
               }}
               className={
                 currentPage === 1
-                  ? "pointer-events-none opacity-50 text-zinc-600"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                  ? "pointer-events-none opacity-50 text-muted-foreground"
+                  : "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
               }
             />
           </PaginationItem>
@@ -87,7 +97,7 @@ export const TutorPagination: React.FC<TutorPaginationProps> = ({
           {pages.map((page, index) => (
             <PaginationItem key={index}>
               {page === "..." ? (
-                <PaginationEllipsis className="text-zinc-600" />
+                <PaginationEllipsis className="text-primary" />
               ) : (
                 <PaginationLink
                   href="#"
@@ -98,8 +108,8 @@ export const TutorPagination: React.FC<TutorPaginationProps> = ({
                   }}
                   className={
                     currentPage === page
-                      ? "bg-emerald-600 border-emerald-600 text-white hover:bg-emerald-700 hover:text-white"
-                      : "text-zinc-400 hover:text-white hover:bg-zinc-900 border-transparent"
+                      ? "bg-primary border-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground"
+                      : "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground border-transparent transition-colors"
                   }
                 >
                   {page}
@@ -117,8 +127,8 @@ export const TutorPagination: React.FC<TutorPaginationProps> = ({
               }}
               className={
                 currentPage === totalPages
-                  ? "pointer-events-none opacity-50 text-zinc-600"
-                  : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                  ? "pointer-events-none opacity-50 text-muted-foreground"
+                  : "bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
               }
             />
           </PaginationItem>

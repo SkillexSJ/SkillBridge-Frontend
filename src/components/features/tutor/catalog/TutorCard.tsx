@@ -1,8 +1,8 @@
 import React from "react";
-import { TutorResponse } from "@/service/tutor.service";
 import { Star, CheckCircle2, Users, MonitorPlay, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { TutorResponse } from "@/types/tutor.types";
 
 interface TutorCardProps {
   tutor: TutorResponse;
@@ -10,7 +10,10 @@ interface TutorCardProps {
 
 export const TutorCard: React.FC<TutorCardProps> = ({ tutor }) => {
   return (
-    <div className="group relative w-full aspect-3/4 rounded-3xl overflow-hidden cursor-pointer border border-border bg-card">
+    <Link
+      href={`/tutors/${tutor.id}`}
+      className="group relative block w-full aspect-3/4 rounded-3xl overflow-hidden cursor-pointer border border-border bg-card transition-all duration-300 hover:shadow-lg"
+    >
       {/* 1. Full Background Image */}
       {/* Using img tag as per design reference, but ensuring it handles object-cover properly */}
       <Image
@@ -51,9 +54,10 @@ export const TutorCard: React.FC<TutorCardProps> = ({ tutor }) => {
         </div>
 
         {/* Expandable Section: Bio, Stats & Action */}
-        <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
+        {/* Visible on mobile (grid-rows-1), Hidden on desktop until hover (lg:grid-rows-0) */}
+        <div className="grid grid-rows-[1fr] lg:grid-rows-[0fr] lg:group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
           <div className="overflow-hidden">
-            <div className="pt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+            <div className="pt-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 delay-100">
               <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed font-light">
                 {tutor.bio}
               </p>
@@ -75,23 +79,28 @@ export const TutorCard: React.FC<TutorCardProps> = ({ tutor }) => {
                   </span>
                 </div>
 
-                <Link href={`/tutors/${tutor.id}`}>
-                  <button className="bg-primary hover:bg-primary/90 text-primary-foreground text-[10px] font-bold px-4 py-2 rounded-full transition-all flex items-center gap-1 cursor-pointer">
-                    Follow <Sparkles className="w-2.5 h-2.5" />
-                  </button>
-                </Link>
+                <div className="bg-primary hover:bg-primary/90 text-primary-foreground text-[10px] font-bold px-4 py-2 rounded-full transition-all flex items-center gap-1">
+                  Follow <Sparkles className="w-2.5 h-2.5" />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Collapsed Hint */}
-        <div className="flex justify-between items-center mt-2 group-hover:hidden transition-all duration-200">
+        {/* Collapsed Hint - Visible on Desktop only when collapsed */}
+        <div className="hidden lg:flex justify-between items-center mt-2 group-hover:hidden transition-all duration-200">
+          <span className="text-primary font-bold text-sm">
+            ${tutor.hourlyRate}/hr
+          </span>
+        </div>
+        {/* Mobile Price Hint (always visible if desired, or part of expanded) */}
+        {/* Actually, let's keep it simple. The expanded view doesn't explicitly show price in the design above, but we should probably add it there too for mobile. */}
+        <div className="lg:hidden mt-2 pt-2 border-t border-border/50 flex justify-between items-center">
           <span className="text-primary font-bold text-sm">
             ${tutor.hourlyRate}/hr
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };

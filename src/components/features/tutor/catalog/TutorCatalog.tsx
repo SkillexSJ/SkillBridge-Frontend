@@ -1,38 +1,73 @@
 "use client";
 
+/**
+ * NODE PACKAGES
+ */
 import React, { useState, useMemo, useEffect, useReducer } from "react";
+import { useSearchParams } from "next/navigation";
+import { Filter } from "lucide-react";
+
+/**
+ * COMPONENTS
+ */
 import { TutorFilter } from "./TutorFilter";
+import { PriceFilter } from "./PriceFilter";
 import { TutorGrid } from "./TutorGrid";
 import { TutorPagination } from "./TutorPagination";
 import { Tabs, TabsList, TabsTab } from "@/components/ui/tabs";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+import { Button } from "@/components/ui/button";
+
+/**
+ * SERVICES
+ */
 import { getAllTutors } from "@/service/tutor.service";
 import { getAllCategories } from "@/service/category.service";
-import { TutorResponse } from "@/types/tutor.types";
-import { Category } from "@/types/types";
-import { filterTutors, sortTutors, paginateItems } from "./tutorCatalogUtils";
-import { demoTutors } from "@/data/dummy-data";
 
+/**
+ * TYPES
+ */
+import { TutorResponse, TutorMeta } from "@/types/tutor.types";
+import { Category } from "@/types/types";
+import { toast } from "sonner";
+
+/**
+ * INTERFACES
+ */
 interface TutorCatalogProps {
   initialCategory?: string;
 }
 
-// Filter state management
+// Filter state
 interface FilterState {
   activeCategory: string;
   searchQuery: string;
   sortBy: "recommended" | "price_low" | "price_high" | "rating";
   filterAvailability: string;
+  minPrice: number | "";
+  maxPrice: number | "";
   currentPage: number;
 }
 
+// Filter action
 type FilterAction =
   | { type: "SET_CATEGORY"; payload: string }
   | { type: "SET_SEARCH"; payload: string }
   | { type: "SET_SORT"; payload: FilterState["sortBy"] }
   | { type: "SET_AVAILABILITY"; payload: string }
+  | { type: "SET_MIN_PRICE"; payload: number | "" }
+  | { type: "SET_MAX_PRICE"; payload: number | "" }
   | { type: "SET_PAGE"; payload: number }
   | { type: "RESET_FILTERS" };
 
+// Filter reducer
 function filterReducer(state: FilterState, action: FilterAction): FilterState {
   switch (action.type) {
     case "SET_CATEGORY":
@@ -43,6 +78,10 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
       return { ...state, sortBy: action.payload, currentPage: 1 };
     case "SET_AVAILABILITY":
       return { ...state, filterAvailability: action.payload, currentPage: 1 };
+    case "SET_MIN_PRICE":
+      return { ...state, minPrice: action.payload, currentPage: 1 };
+    case "SET_MAX_PRICE":
+      return { ...state, maxPrice: action.payload, currentPage: 1 };
     case "SET_PAGE":
       return { ...state, currentPage: action.payload };
     case "RESET_FILTERS":
@@ -51,6 +90,8 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
         searchQuery: "",
         sortBy: "recommended",
         filterAvailability: "any",
+        minPrice: "",
+        maxPrice: "",
         currentPage: 1,
       };
     default:
@@ -59,90 +100,121 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
 }
 
 const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
+  // URL params
+  const searchParams = useSearchParams();
+  const urlCategory = searchParams.get("category");
+  const urlSearch = searchParams.get("search");
+
+  // Filter state
   const [filters, dispatch] = useReducer(filterReducer, {
-    activeCategory: initialCategory || "All Tutors",
-    searchQuery: "",
+    activeCategory: urlCategory || initialCategory || "All Tutors",
+    searchQuery: urlSearch || "",
     sortBy: "recommended",
     filterAvailability: "any",
+    minPrice: "",
+    maxPrice: "",
     currentPage: 1,
   });
 
+  // Data states
   const [tutors, setTutors] = useState<TutorResponse[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [meta, setMeta] = useState<TutorMeta>({ page: 1, limit: 12, total: 0 });
   const [loading, setLoading] = useState(true);
 
-  const itemsPerPage = 12;
-
-  // Fetch categories and tutors in parallel
+  // Fetch categories
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchCategories = async () => {
       try {
-        const [categoriesResponse, tutorsResponse] = await Promise.all([
-          getAllCategories(),
-          getAllTutors({
-            page: 1,
-            limit: 1000, // Fetch all tutors for client-side filtering
-          }),
-        ]);
-
-        if (categoriesResponse.success && categoriesResponse.data) {
-          setCategories(categoriesResponse.data);
-        }
-
-        if (tutorsResponse.success && tutorsResponse.data) {
-          setTutors(tutorsResponse.data);
+        const response = await getAllCategories({ limit: 100 });
+        if (response.success && response.data) {
+          setCategories(response.data);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
-        setTutors([]);
-      } finally {
-        setLoading(false);
+        console.error("Error fetching categories:", error);
       }
     };
-
-    fetchData();
+    fetchCategories();
   }, []);
 
-  // Update category when initialCategory prop changes
+  // Handle URL params
+  useEffect(() => {
+    if (urlCategory) {
+      dispatch({ type: "SET_CATEGORY", payload: urlCategory });
+    }
+    if (urlSearch) {
+      dispatch({ type: "SET_SEARCH", payload: urlSearch });
+    }
+  }, [urlCategory, urlSearch]);
+
+  // Update category changes
   useEffect(() => {
     if (initialCategory) {
       dispatch({ type: "SET_CATEGORY", payload: initialCategory });
     }
   }, [initialCategory]);
 
-  // Apply filters and sorting
-  const filteredAndSortedTutors = useMemo(() => {
-    let result = filterTutors(tutors, {
-      category: filters.activeCategory,
-      searchQuery: filters.searchQuery,
-      availability: filters.filterAvailability,
-    });
+  // Handle Tutors
+  useEffect(() => {
+    const fetchTutors = async () => {
+      setLoading(true);
+      try {
+        let categoryId = undefined;
 
-    result = sortTutors(result, filters.sortBy);
+        // Get category ID
+        if (filters.activeCategory !== "All Tutors") {
+          const category = categories.find(
+            (c) => c.name === filters.activeCategory,
+          );
+          categoryId = category?.id;
+        }
 
-    return result;
-  }, [tutors, filters]);
+        const response = await getAllTutors({
+          page: filters.currentPage,
+          limit: 12,
+          search: filters.searchQuery,
+          categoryId: categoryId,
+          minPrice: filters.minPrice === "" ? undefined : filters.minPrice,
+          maxPrice: filters.maxPrice === "" ? undefined : filters.maxPrice,
+          sortBy: filters.sortBy,
+        });
 
-  // Paginate the filtered results
-  const paginatedTutors = useMemo(() => {
-    return paginateItems(
-      filteredAndSortedTutors,
-      filters.currentPage,
-      itemsPerPage,
-    );
-  }, [filteredAndSortedTutors, filters.currentPage]);
+        if (response.success && response.data) {
+          setTutors(response.data);
+          if (response.meta) {
+            setMeta(response.meta);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching tutors:", error);
+        toast.error("Error fetching tutors");
+        setTutors([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const totalPages = Math.ceil(filteredAndSortedTutors.length / itemsPerPage);
+    // Fetch tutors initial load
+    if (categories.length > 0 || filters.activeCategory === "All Tutors") {
+      fetchTutors();
+    }
+  }, [filters, categories]);
 
-  // Dynamic category names from backend + "All Tutors"
+  // Dynamic category names
   const categoryNames = useMemo(() => {
     return ["All Tutors", ...categories.map((cat) => cat.name)];
   }, [categories]);
 
+  // Handle Filtering
   const handleFilterChange = (
     type: string,
-    value: string | "recommended" | "price_low" | "price_high" | "rating",
+    value:
+      | string
+      | number
+      | "recommended"
+      | "price_low"
+      | "price_high"
+      | "rating",
   ) => {
     switch (type) {
       case "category":
@@ -164,16 +236,26 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
       case "availability":
         dispatch({ type: "SET_AVAILABILITY", payload: value as string });
         break;
+      case "minPrice":
+        dispatch({ type: "SET_MIN_PRICE", payload: value as number | "" });
+        break;
+      case "maxPrice":
+        dispatch({ type: "SET_MAX_PRICE", payload: value as number | "" });
+        break;
     }
   };
 
+  // Handle Clear Filters
   const handleClearFilters = () => {
     dispatch({ type: "RESET_FILTERS" });
   };
 
+  // Handle Page Change
   const handlePageChange = (page: number) => {
     dispatch({ type: "SET_PAGE", payload: page });
   };
+
+  const totalPages = Math.ceil(meta.total / meta.limit) || 1;
 
   return (
     <div className="bg-background min-h-screen py-12">
@@ -190,15 +272,12 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
               onValueChange={(value) => handleFilterChange("category", value)}
               className="w-full"
             >
-              <TabsList
-                variant="underline"
-                className="bg-transparent p-0 gap-6 w-full justify-start overflow-x-auto scrollbar-hide border-b border-border pb-px"
-              >
+              <TabsList className="bg-transparent p-0 gap-3 w-full justify-start overflow-x-auto  scrollbar-hide pb-2 *:data-[slot=tab-indicator]:hidden">
                 {categoryNames.map((cat) => (
                   <TabsTab
                     key={cat}
                     value={cat}
-                    className="text-muted-foreground data-active:text-primary text-base px-0 bg-transparent hover:text-foreground transition-colors h-12"
+                    className="h-10 rounded-full border border-border bg-background px-6 text-sm font-medium text-muted-foreground transition-all hover:bg-muted hover:text-foreground data-active:bg-primary data-active:text-primary-foreground data-active:border-primary"
                   >
                     {cat}
                   </TabsTab>
@@ -207,16 +286,76 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
             </Tabs>
           </div>
 
-          <TutorFilter
-            searchQuery={filters.searchQuery}
-            onSearchChange={(value) => handleFilterChange("search", value)}
-            sortBy={filters.sortBy}
-            onSortChange={(value) => handleFilterChange("sort", value)}
-            filterAvailability={filters.filterAvailability}
-            onAvailabilityChange={(value) =>
-              handleFilterChange("availability", value)
-            }
-          />
+          {/* Filters Section  */}
+          <div className="mb-10">
+            {/* Mobile Filter Trigger */}
+            <div className="lg:hidden mb-4">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="outline" className="max-w-xl flex gap-2">
+                    <Filter className="w-4 h-4" />
+                    Filter Tutors
+                  </Button>
+                </SheetTrigger>
+                <SheetContent
+                  side="left"
+                  className="w-[300px] sm:w-[540px] overflow-y-auto p-6"
+                >
+                  <SheetHeader className="mb-6">
+                    <SheetTitle>Filter Tutors</SheetTitle>
+                  </SheetHeader>
+                  <div className="flex flex-col gap-4">
+                    <TutorFilter
+                      searchQuery={filters.searchQuery}
+                      onSearchChange={(value) =>
+                        handleFilterChange("search", value)
+                      }
+                      sortBy={filters.sortBy}
+                      onSortChange={(value) =>
+                        handleFilterChange("sort", value)
+                      }
+                      filterAvailability={filters.filterAvailability}
+                      onAvailabilityChange={(value) =>
+                        handleFilterChange("availability", value)
+                      }
+                      layout="vertical"
+                    />
+                    <PriceFilter
+                      minPrice={filters.minPrice}
+                      maxPrice={filters.maxPrice}
+                      onMinPriceChange={(val) =>
+                        handleFilterChange("minPrice", val)
+                      }
+                      onMaxPriceChange={(val) =>
+                        handleFilterChange("maxPrice", val)
+                      }
+                      fullWidth
+                    />
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+
+            {/* Desktop Filters */}
+            <div className="hidden lg:flex flex-col lg:flex-row gap-4 items-center">
+              <TutorFilter
+                searchQuery={filters.searchQuery}
+                onSearchChange={(value) => handleFilterChange("search", value)}
+                sortBy={filters.sortBy}
+                onSortChange={(value) => handleFilterChange("sort", value)}
+                filterAvailability={filters.filterAvailability}
+                onAvailabilityChange={(value) =>
+                  handleFilterChange("availability", value)
+                }
+              />
+              <PriceFilter
+                minPrice={filters.minPrice}
+                maxPrice={filters.maxPrice}
+                onMinPriceChange={(val) => handleFilterChange("minPrice", val)}
+                onMaxPriceChange={(val) => handleFilterChange("maxPrice", val)}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Grid */}
@@ -228,10 +367,7 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
             </div>
           </div>
         ) : (
-          <TutorGrid
-            tutors={paginatedTutors}
-            onClearFilters={handleClearFilters}
-          />
+          <TutorGrid tutors={tutors} onClearFilters={handleClearFilters} />
         )}
 
         {/* Pagination */}
@@ -239,8 +375,8 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
           currentPage={filters.currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
-          totalItems={filteredAndSortedTutors.length}
-          itemsPerPage={itemsPerPage}
+          totalItems={meta.total}
+          itemsPerPage={meta.limit}
         />
       </div>
     </div>
