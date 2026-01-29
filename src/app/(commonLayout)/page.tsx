@@ -7,7 +7,7 @@ import { TestimonialsMarqueeDemo2 } from "@/components/features/Home/Testimonial
 export default async function Home() {
   return (
     <>
-      <main className="min-h-screen flex flex-col max-w-7xl mx-auto">
+      <main className="min-h-screen flex flex-col">
         <Hero />
 
         {/* Trusted By Section - Overlapping Hero */}

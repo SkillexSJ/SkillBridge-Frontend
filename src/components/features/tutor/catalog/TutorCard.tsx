@@ -1,11 +1,11 @@
 import React from "react";
-import { Tutor } from "@/types/types";
+import { TutorResponse } from "@/service/tutor.service";
 import { Star, CheckCircle2, Users, MonitorPlay, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 interface TutorCardProps {
-  tutor: Tutor;
+  tutor: TutorResponse;
 }
 
 export const TutorCard: React.FC<TutorCardProps> = ({ tutor }) => {
@@ -14,8 +14,8 @@ export const TutorCard: React.FC<TutorCardProps> = ({ tutor }) => {
       {/* 1. Full Background Image */}
       {/* Using img tag as per design reference, but ensuring it handles object-cover properly */}
       <Image
-        src={tutor.imageUrl}
-        alt={tutor.name}
+        src={tutor.user.image || "/placeholder-avatar.jpg"}
+        alt={tutor.user.name}
         fill
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
       />
@@ -28,7 +28,7 @@ export const TutorCard: React.FC<TutorCardProps> = ({ tutor }) => {
         <div className="flex items-center gap-1 bg-black/40 backdrop-blur-md border border-white/10 px-2 py-1 rounded-full">
           <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
           <span className="text-[10px] font-bold text-white">
-            {tutor.rating}
+            {tutor.averageRating}
           </span>
         </div>
       </div>
@@ -40,12 +40,12 @@ export const TutorCard: React.FC<TutorCardProps> = ({ tutor }) => {
           <div>
             <div className="flex items-center gap-1.5">
               <h3 className="text-base font-bold text-card-foreground tracking-tight">
-                {tutor.name}
+                {tutor.user.name}
               </h3>
               <CheckCircle2 className="w-3.5 h-3.5 text-primary fill-primary/20" />
             </div>
             <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-              {tutor.role}
+              {tutor.category.name}
             </p>
           </div>
         </div>
@@ -55,7 +55,7 @@ export const TutorCard: React.FC<TutorCardProps> = ({ tutor }) => {
           <div className="overflow-hidden">
             <div className="pt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
               <p className="text-sm text-muted-foreground line-clamp-2 mb-4 leading-relaxed font-light">
-                {tutor.about}
+                {tutor.bio}
               </p>
 
               <div className="flex items-center justify-between pt-3 border-t border-border">

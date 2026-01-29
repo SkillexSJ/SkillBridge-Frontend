@@ -24,8 +24,6 @@ export const TutorPagination: React.FC<TutorPaginationProps> = ({
   totalItems,
   itemsPerPage,
 }) => {
-  if (totalPages <= 1) return null;
-
   // Generate page numbers to display
   const getPageNumbers = () => {
     const delta = 2;

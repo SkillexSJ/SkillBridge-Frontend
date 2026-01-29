@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { MobileNav } from "@/components/shared/mobile-nav";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import Link from "next/link";
+import { getAllCategories } from "@/service/category.service";
 
 export const navLinks = [
   {
@@ -52,7 +53,7 @@ export function Header() {
           ))}
           <ThemeToggle />
           <Link
-            href="/login"
+            href="/signin"
             className={cn(
               buttonVariants({ variant: "outline" }),
               "rounded-full",
@@ -61,7 +62,7 @@ export function Header() {
             Sign In
           </Link>
           <Link
-            href="/register"
+            href="/signup"
             className={cn(buttonVariants(), "rounded-full")}
           >
             Get Started

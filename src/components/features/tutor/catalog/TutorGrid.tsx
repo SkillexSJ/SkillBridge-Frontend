@@ -1,9 +1,9 @@
 import React from "react";
-import { Tutor } from "@/types/types";
+import { TutorResponse } from "@/service/tutor.service";
 import { TutorCard } from "./TutorCard";
 
 interface TutorGridProps {
-  tutors: Tutor[];
+  tutors: TutorResponse[];
   onClearFilters: () => void;
 }
 

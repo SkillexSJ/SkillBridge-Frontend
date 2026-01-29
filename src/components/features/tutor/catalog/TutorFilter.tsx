@@ -15,20 +15,22 @@ import {
 
 interface TutorFilterProps {
   searchQuery: string;
-  setSearchQuery: (q: string) => void;
+  onSearchChange: (q: string) => void;
   sortBy: string;
-  setSortBy: (s: "recommended" | "price_low" | "price_high" | "rating") => void;
+  onSortChange: (
+    s: "recommended" | "price_low" | "price_high" | "rating",
+  ) => void;
   filterAvailability: string;
-  setFilterAvailability: (a: string) => void;
+  onAvailabilityChange: (a: string) => void;
 }
 
 export const TutorFilter: React.FC<TutorFilterProps> = ({
   searchQuery,
-  setSearchQuery,
+  onSearchChange,
   sortBy,
-  setSortBy,
+  onSortChange,
   filterAvailability,
-  setFilterAvailability,
+  onAvailabilityChange,
 }) => {
   return (
     <div className="flex flex-col gap-6 mb-10">
@@ -41,7 +43,7 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
             placeholder="Search by subject, skill, or tutor name..."
             className="w-full bg-background border-input text-foreground pl-12 pr-4 h-12 rounded-xl focus-visible:ring-primary/50"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => onSearchChange(e.target.value)}
           />
         </div>
 
@@ -66,7 +68,7 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
               <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuRadioGroup
                 value={sortBy}
-                onValueChange={(val) => setSortBy(val as any)}
+                onValueChange={(val) => onSortChange(val as any)}
               >
                 <DropdownMenuRadioItem
                   value="recommended"
@@ -115,7 +117,7 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
               <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuRadioGroup
                 value={filterAvailability}
-                onValueChange={setFilterAvailability}
+                onValueChange={onAvailabilityChange}
               >
                 <DropdownMenuRadioItem
                   value="any"
