@@ -18,7 +18,7 @@ import {
 /**
  * TYPES
  */
-import { Category } from "@/types/types";
+import { Category } from "@/types/category.types";
 
 export const getCategoryColumns = (
   onDelete: (id: string) => void,

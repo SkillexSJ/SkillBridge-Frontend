@@ -1,16 +1,10 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { MoveLeft, HelpCircle } from "lucide-react";
+import { MoveLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center bg-background px-4 text-center">
-      <div className="relative mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-muted">
-        <HelpCircle className="h-12 w-12 text-primary" />
-        <div className="absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground text-lg font-bold shadow-lg">
-          ?
-        </div>
-      </div>
       <h1 className="mb-2 text-4xl font-extrabold tracking-tight lg:text-5xl">
         404
       </h1>

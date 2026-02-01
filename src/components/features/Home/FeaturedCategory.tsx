@@ -105,7 +105,7 @@ const FeaturedCategory = () => {
             <Link
               key={category.id}
               href={category.href}
-              className="group relative flex flex-col items-center justify-center p-8 rounded-3xl bg-card/50 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:bg-card hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1"
+              className="group relative flex flex-col items-center justify-center p-8 rounded-3xl bg-card border border-border/60 hover:border-primary/50 transition-all duration-300 hover:bg-card hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 dark:bg-card/50 dark:border-border/50"
             >
               {/* Icon Circle */}
               <div

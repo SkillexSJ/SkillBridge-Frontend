@@ -218,11 +218,15 @@ export default function UnifiedProfile({
   const currentSocialLinks = form.watch("socialLinks") || [];
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-10">
+    <div className="space-y-6 w-full max-w-full mx-auto pb-24">
       {/* HEADER / AVATAR SECTION */}
       <Card className="overflow-hidden border-none shadow-md">
-        <div className="h-32 bg-linear-to-r from-primary/10 to-primary/5" />
-        <CardContent className="px-8 pb-8 pt-0 flex flex-col sm:flex-row items-end gap-6 -mt-12">
+        <div className="h-48 relative overflow-hidden flex items-center justify-center border-b border-border/40 bg-muted/10">
+          <h1 className="text-5xl md:text-7xl font-bold tracking-wide select-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-center text-black/70 dark:text-white/70">
+            SKILL BRIDGE<span className="text-primary">.</span>
+          </h1>
+        </div>
+        <CardContent className="px-6 pb-8 pt-0 flex flex-col items-start sm:flex-row sm:items-end gap-6 -mt-12">
           <div className="relative group">
             <Avatar className="h-32 w-32 rounded-2xl border-4 border-background shadow-xl">
               <AvatarImage
@@ -255,10 +259,10 @@ export default function UnifiedProfile({
               />
             </div>
           </div>
-          <div className="text-center sm:text-left space-y-1 mb-2 flex-1">
+          <div className="text-left space-y-1 mb-2 flex-1">
             <h2 className="text-3xl font-bold tracking-tight">{user.name}</h2>
             <p className="text-muted-foreground font-medium">{user.email}</p>
-            <div className="flex flex-wrap gap-2 justify-center sm:justify-start pt-2">
+            <div className="flex flex-wrap gap-2 justify-start pt-2">
               <Badge
                 variant="secondary"
                 className="capitalize px-3 py-1 text-sm font-medium"
@@ -583,8 +587,8 @@ export default function UnifiedProfile({
             </div>
 
             {/* ACTION BAR */}
-            <div className="sticky bottom-6 z-10 flex justify-end">
-              <Card className="w-full max-w-5xl shadow-lg border-primary/20 bg-background/80 backdrop-blur-md">
+            <div className="sticky bottom-6 z-10 flex justify-center w-full px-4">
+              <Card className="w-full max-w-4xl shadow-xl border-primary/20 bg-background/90 backdrop-blur-xl rounded-2xl">
                 <CardContent className="p-4 flex items-center justify-between">
                   <p className="text-sm text-muted-foreground hidden sm:block">
                     Remember to save your changes before leaving.

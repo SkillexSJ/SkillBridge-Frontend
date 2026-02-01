@@ -25,15 +25,9 @@ import { cn } from "@/lib/utils";
  * SERVICES
  */
 import { createBooking } from "@/service/booking.service";
-
-/**
- * UTILS
- */
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
-/**
- * INTERFACE
- */
 interface TutorBookingSidebarProps {
   tutor: TutorDetailResponse;
   availabilitySlots: AvailabilitySlot[];
@@ -47,6 +41,7 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
    * States and Hooks
    */
   const router = useRouter();
+  const { data: session } = authClient.useSession();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [isBooking, setIsBooking] = useState(false);
@@ -118,6 +113,13 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
    * Booking Handler
    */
   const handleBooking = async () => {
+    // send unauthenticated user to signin page
+    if (!session) {
+      toast.error("Please sign in to book a session");
+      router.push("/signin");
+      return;
+    }
+
     if (!date || !selectedTimeSlot) return;
 
     setIsBooking(true);
@@ -299,12 +301,17 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
           {/* CTA */}
           <button
             onClick={handleBooking}
-            disabled={!selectedTimeSlot || !date || isBooking}
+            disabled={isBooking || (!!session && (!selectedTimeSlot || !date))}
             className="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground font-bold text-lg py-4 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group"
           >
             {isBooking ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" /> Processing...
+              </>
+            ) : !session ? (
+              <>
+                Sign in to Book
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </>
             ) : (
               <>

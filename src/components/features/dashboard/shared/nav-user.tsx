@@ -25,6 +25,9 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import React from "react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function NavUser({
   user,
@@ -37,10 +40,17 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar();
   const [mounted, setMounted] = React.useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    toast.success("Logged out successfully");
+    router.refresh();
+  };
 
   if (!mounted) {
     return (
@@ -114,7 +124,10 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={handleLogout}
+              className="cursor-pointer text-destructive focus:text-destructive"
+            >
               <IconLogout />
               Log out
             </DropdownMenuItem>

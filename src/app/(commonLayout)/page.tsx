@@ -19,9 +19,9 @@ export default async function Home() {
 
         {/* Trusted By Section - Overlapping Hero */}
 
-        <section className=" w-full rounded-t-[2.5rem] md:rounded-t-[5rem] mt-5 border-t border-primary shadow-[0_-10px_50px_-20px_rgba(0,0,0,0.1)]">
-          <div className="px-4 sm:px-6 lg:px-8 pt-16 pb-8 text-center">
-            <p className="text-[10px] sm:text-xs md:text-sm font-bold text-muted-foreground/60 uppercase tracking-[0.2em] mb-8">
+        <section className="w-full rounded-t-[2.5rem] md:rounded-t-[5rem] mt-5 border-t border-primary/50 shadow-[0_-20px_80px_-20px_rgba(0,178,98,0.5)] dark:shadow-[0_-20px_80px_-20px_rgba(0,178,98,0.3)] bg-background relative z-10">
+          <div className="px-4 sm:px-6 mb-5 lg:px-8 pt-16 pb-8 text-center">
+            <p className="text-xs md:text-sm font-bold bg-clip-text text-transparent bg-linear-to-r from-gray-500 via-gray-900 to-gray-500 dark:from-gray-400 dark:via-white dark:to-gray-400 uppercase tracking-[0.3em] mb-12 opacity-90 drop-shadow-sm">
               Trusted by leading companies and institutions
             </p>
             <div className="w-full">

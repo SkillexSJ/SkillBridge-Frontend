@@ -5,6 +5,7 @@
  */
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { LayoutDashboard, User, GraduationCap, LogOut } from "lucide-react";
 /**
  * HOOKS
  */
@@ -92,7 +93,10 @@ export function Header({ initialSession }: HeaderProps) {
         <div className="hidden items-center gap-1 md:flex">
           {navLinks.map((link, i) => (
             <Link
-              className={buttonVariants({ variant: "ghost" })}
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                "rounded-full hover:bg-primary/10",
+              )}
               href={link.href}
               key={i}
             >
@@ -119,35 +123,81 @@ export function Header({ initialSession }: HeaderProps) {
                   </AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/dashboard" className="cursor-pointer w-full">
-                    Dashboard
+              <DropdownMenuContent
+                align="end"
+                className="w-64 p-2 rounded-2xl border-primary/20 bg-background/95 backdrop-blur-md shadow-xl"
+              >
+                <div className="flex items-center gap-3 p-2 mb-1 rounded-xl bg-muted/50">
+                  <Avatar className="h-10 w-10 border border-primary/20">
+                    <AvatarImage
+                      src={session.user.image || ""}
+                      alt={session.user.name || "User"}
+                    />
+                    <AvatarFallback className="bg-primary/10 text-primary animate-pulse">
+                      {session.user.name?.charAt(0).toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col space-y-0.5 overflow-hidden">
+                    <p className="text-sm font-semibold truncate">
+                      {session.user.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {session.user.email}
+                    </p>
+                  </div>
+                </div>
+
+                <DropdownMenuSeparator className="my-1 bg-primary/10" />
+
+                <DropdownMenuItem
+                  asChild
+                  className="rounded-lg focus:bg-primary/10 focus:text-primary cursor-pointer"
+                >
+                  <Link
+                    href="/dashboard"
+                    className="w-full flex items-center gap-2"
+                  >
+                    <LayoutDashboard className="h-4 w-4" />
+                    <span>Dashboard</span>
                   </Link>
                 </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  asChild
+                  className="rounded-lg focus:bg-primary/10 focus:text-primary cursor-pointer"
+                >
+                  <Link
+                    href="/profile"
+                    className="w-full flex items-center gap-2"
+                  >
+                    <User className="h-4 w-4" />
+                    <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+
                 {(session.user as any).role !== "tutor" && (
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem
+                    asChild
+                    className="rounded-lg focus:bg-primary/10 focus:text-primary cursor-pointer"
+                  >
                     <Link
                       href="/onboarding/tutor"
-                      className="cursor-pointer w-full"
+                      className="w-full flex items-center gap-2"
                     >
-                      Become a Tutor
+                      <GraduationCap className="h-4 w-4" />
+                      <span>Become a Tutor</span>
                     </Link>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="cursor-pointer w-full">
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
+
+                <DropdownMenuSeparator className="my-1 bg-primary/10" />
+
                 <DropdownMenuItem
-                  className="text-destructive focus:bg-destructive/10 cursor-pointer"
+                  className="rounded-lg text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer flex items-center gap-2"
                   onClick={handleSignOut}
                 >
-                  Sign Out
+                  <LogOut className="h-4 w-4" />
+                  <span>Sign Out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

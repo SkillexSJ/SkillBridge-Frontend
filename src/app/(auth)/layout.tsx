@@ -39,9 +39,19 @@ export default function AuthLayout({
       <div className="flex flex-col ">
         <div className="flex justify-center gap-2 md:justify-start">
           <Link href="/" className="flex items-center gap-2">
+            {/* Logo for Light Mode ) */}
+            <Image
+              src="/logoblack.svg"
+              className="h-32 translate-x-3 md:translate-x-0 w-auto object-contain dark:hidden"
+              alt="Skill Bridge"
+              width={150}
+              height={60}
+              priority
+            />
+            {/* Logo for Dark Mode) */}
             <Image
               src="/logo.svg"
-              className="h-32 translate-x-3  md:translate-x-0 w-auto object-contain"
+              className="h-32 translate-x-3 md:translate-x-0 w-auto object-contain hidden dark:block"
               alt="Skill Bridge"
               width={150}
               height={60}

@@ -51,10 +51,11 @@ export const TutorHeader: React.FC<TutorHeaderProps> = ({
     <div className="relative bg-card/50 border-b border-border pb-8">
       {/* Banner */}
       <div className="h-48 md:h-64 w-full relative overflow-hidden bg-muted">
-        <div className="absolute inset-0 bg-linear-to-b from-primary/10 to-background"></div>
+        {/* Gradient overlay  */}
+        <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-background dark:from-primary/10"></div>
 
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#3f3f4620_1px,transparent_1px),linear-gradient(to_bottom,#3f3f4620_1px,transparent_1px)] bg-size-[40px_40px] opacity-20"></div>
+        {/* Grid Pattern  */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.1)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-size-[40px_40px] opacity-40 dark:opacity-30"></div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 relative z-10">
