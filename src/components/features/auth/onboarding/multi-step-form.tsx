@@ -12,6 +12,7 @@ import {
   Loader2,
   Plus,
   Trash2,
+  X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -50,14 +51,14 @@ import { cn } from "@/lib/utils";
 import {
   createTutorProfile,
   updateTutorAvailability,
-  AvailabilitySlot,
+  AvailabilitySlotInput,
 } from "@/service/tutor.service";
 import { getAllCategories } from "@/service/category.service";
+import { Category } from "@/types/category.types";
 
 /**
  * TYPES
  */
-import { Category } from "@/types/types";
 
 /**
  * CONSTANTS
@@ -95,17 +96,19 @@ export default function MultiStepTutorForm() {
   // Form State
   const [formData, setFormData] = useState({
     bio: "",
-    experience: "",
+    experience: 0,
     location: "",
     categoryId: "",
     specialty: "",
     hourlyRate: "",
+    expertise: [] as string[],
   });
 
-  const [availability, setAvailability] = useState<AvailabilitySlot[]>([
+  const [tagInput, setTagInput] = useState("");
+
+  const [availability, setAvailability] = useState<AvailabilitySlotInput[]>([
     { dayOfWeek: 1, startTime: "09:00", endTime: "17:00" }, // Default Monday
   ]);
-
 
   /**
    * Category Fetching
@@ -122,7 +125,7 @@ export default function MultiStepTutorForm() {
     fetchCats();
   }, []);
 
-  const updateFormData = (field: string, value: string) => {
+  const updateFormData = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -139,12 +142,37 @@ export default function MultiStepTutorForm() {
 
   const updateSlot = (
     index: number,
-    field: keyof AvailabilitySlot,
+    field: keyof AvailabilitySlotInput,
     value: any,
   ) => {
     const newSlots = [...availability];
     newSlots[index] = { ...newSlots[index], [field]: value };
     setAvailability(newSlots);
+  };
+
+  const addCurrentTag = () => {
+    const tag = tagInput.trim().replace(",", "");
+    if (tag && !formData.expertise.includes(tag)) {
+      setFormData((prev) => ({
+        ...prev,
+        expertise: [...prev.expertise, tag],
+      }));
+      setTagInput("");
+    }
+  };
+
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addCurrentTag();
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      expertise: prev.expertise.filter((tag) => tag !== tagToRemove),
+    }));
   };
 
   const nextStep = () => {
@@ -166,8 +194,10 @@ export default function MultiStepTutorForm() {
       try {
         await createTutorProfile({
           ...formData,
+          experience: Number(formData.experience),
           hourlyRate: Number(formData.hourlyRate),
-          expertise: [], // Optional
+          expertise: formData.expertise,
+          specialty: formData.expertise.join(", "), // Derived from tags
           socialLinks: [], // Optional
         });
         profileCreated = true;
@@ -216,8 +246,8 @@ export default function MultiStepTutorForm() {
           toast.error("Bio must be longer than 10 characters");
           return false;
         }
-        if (formData.experience.length <= 10) {
-          toast.error("Experience details must be longer than 10 characters");
+        if (Number(formData.experience) < 0) {
+          toast.error("Experience cannot be negative");
           return false;
         }
         return true;
@@ -226,8 +256,8 @@ export default function MultiStepTutorForm() {
           toast.error("Please select a category");
           return false;
         }
-        if (!formData.specialty) {
-          toast.error("Please enter your specialty");
+        if (formData.expertise.length === 0) {
+          toast.error("Please add at least one expertise tag");
           return false;
         }
         if (Number(formData.hourlyRate) <= 0 || !formData.hourlyRate) {
@@ -319,18 +349,16 @@ export default function MultiStepTutorForm() {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Experience</Label>
-                      <Textarea
-                        placeholder="Your teaching experience..."
-                        className="min-h-[100px]"
+                      <Label>Experience (Years)</Label>
+                      <Input
+                        type="number"
+                        placeholder="e.g. 5"
+                        min={0}
                         value={formData.experience}
                         onChange={(e) =>
                           updateFormData("experience", e.target.value)
                         }
                       />
-                      <p className="text-xs text-muted-foreground">
-                        Min 10 characters
-                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label>Location (Optional)</Label>
@@ -368,14 +396,42 @@ export default function MultiStepTutorForm() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Specialty</Label>
-                      <Input
-                        placeholder="e.g. Algebra, React Native"
-                        value={formData.specialty}
-                        onChange={(e) =>
-                          updateFormData("specialty", e.target.value)
-                        }
-                      />
+                      <Label>Expertise ({formData.expertise.length})</Label>
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {formData.expertise.map((tag) => (
+                          <div
+                            key={tag}
+                            className="flex items-center gap-1 bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm"
+                          >
+                            <span>{tag}</span>
+                            <button
+                              onClick={() => removeTag(tag)}
+                              className="text-muted-foreground hover:text-foreground"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Type skill (e.g. Figma)"
+                          value={tagInput}
+                          onChange={(e) => setTagInput(e.target.value)}
+                          onKeyDown={handleTagKeyDown}
+                        />
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="outline"
+                          onClick={addCurrentTag}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Press Enter or click + to add
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label>Hourly Rate ($)</Label>
@@ -410,52 +466,68 @@ export default function MultiStepTutorForm() {
                       {availability.map((slot, idx) => (
                         <div
                           key={idx}
-                          className="flex items-center gap-2 p-3 border rounded-lg bg-card/50"
+                          className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-2 p-3 border rounded-lg bg-card/50"
                         >
-                          <Select
-                            value={slot.dayOfWeek.toString()}
-                            onValueChange={(val) =>
-                              updateSlot(idx, "dayOfWeek", Number(val))
-                            }
-                          >
-                            <SelectTrigger className="w-[120px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {DAYS.map((d) => (
-                                <SelectItem
-                                  key={d.value}
-                                  value={d.value.toString()}
-                                >
-                                  {d.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          {/* Day Selection + Mobile Delete */}
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <Select
+                              value={slot.dayOfWeek.toString()}
+                              onValueChange={(val) =>
+                                updateSlot(idx, "dayOfWeek", Number(val))
+                              }
+                            >
+                              <SelectTrigger className="flex-1 sm:w-[130px]">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {DAYS.map((d) => (
+                                  <SelectItem
+                                    key={d.value}
+                                    value={d.value.toString()}
+                                  >
+                                    {d.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
 
-                          <Input
-                            type="time"
-                            className="w-[110px]"
-                            value={slot.startTime}
-                            onChange={(e) =>
-                              updateSlot(idx, "startTime", e.target.value)
-                            }
-                          />
-                          <span className="text-muted-foreground">-</span>
-                          <Input
-                            type="time"
-                            className="w-[110px]"
-                            value={slot.endTime}
-                            onChange={(e) =>
-                              updateSlot(idx, "endTime", e.target.value)
-                            }
-                          />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeSlot(idx)}
+                              className="sm:hidden text-destructive hover:bg-destructive/10 shrink-0"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
 
+                          {/* Time Inputs */}
+                          <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <Input
+                              type="time"
+                              className="flex-1 sm:w-[120px]"
+                              value={slot.startTime}
+                              onChange={(e) =>
+                                updateSlot(idx, "startTime", e.target.value)
+                              }
+                            />
+                            <span className="text-muted-foreground">-</span>
+                            <Input
+                              type="time"
+                              className="flex-1 sm:w-[120px]"
+                              value={slot.endTime}
+                              onChange={(e) =>
+                                updateSlot(idx, "endTime", e.target.value)
+                              }
+                            />
+                          </div>
+
+                          {/* Desktop Delete */}
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => removeSlot(idx)}
-                            className="text-destructive hover:bg-destructive/10"
+                            className="hidden sm:inline-flex text-destructive hover:bg-destructive/10"
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>

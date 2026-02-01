@@ -1,11 +1,22 @@
+/**
+ * NODE PACKAGES
+ */
 import { notFound } from "next/navigation";
+
+/**
+ * COMPONENTS
+ */
 import TutorProfile from "@/components/features/tutor/profile/TutorProfile";
+
+/**
+ * SERVICES
+ */
 import { getTutorById } from "@/service/tutor.service";
 
 interface TutorProfilePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const TutorProfilePage = async ({ params }: TutorProfilePageProps) => {

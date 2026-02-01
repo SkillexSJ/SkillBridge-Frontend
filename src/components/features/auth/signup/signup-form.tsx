@@ -13,7 +13,6 @@ import {
   Loader2,
   GraduationCap,
   School,
-  CheckCircle2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -34,6 +33,8 @@ import { cn } from "@/lib/utils";
  * SERVICES
  */
 import { authService } from "@/service/auth.service";
+import Image from "next/image";
+import Link from "next/link";
 
 /**
  * Constants
@@ -146,13 +147,22 @@ export function SignupForm({
     setIsLoading(true);
     try {
       let response;
+      const intendedRole = data.role;
+      // If user wants to be a tutor, sign them up as a student first
+      // and set a cookie/flag to redirect them to onboarding later.
+      const roleToSubmit = intendedRole === "tutor" ? "student" : intendedRole;
+
+      if (intendedRole === "tutor") {
+        document.cookie = "intended_role=tutor; path=/; max-age=86400"; // 1 day
+      }
+
       if (data.image && data.image[0]) {
         // Option A: Single Request (Custom Endpoint)
         response = await authService.signUpWithImage({
           email: data.email,
           password: data.password,
           name: data.name,
-          role: data.role,
+          role: roleToSubmit,
           imageFile: data.image[0],
         });
       } else {
@@ -161,7 +171,7 @@ export function SignupForm({
           email: data.email,
           password: data.password,
           name: data.name,
-          role: data.role,
+          role: roleToSubmit,
         });
       }
 
@@ -170,7 +180,7 @@ export function SignupForm({
       }
 
       toast.success("Account created! Please verify your email.");
-      router.push("/verify-email");
+      router.push(`/verify-email?role=${data.role}`);
     } catch (error: any) {
       toast.error(
         error?.response?.data?.message ||
@@ -239,30 +249,19 @@ export function SignupForm({
                 </div>
               </div>
 
-              <Button
-                variant="outline"
+              <button
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={isLoading}
-                className="w-full h-12 rounded-xl"
+                className="w-full flex items-center justify-center h-12 bg-transparent rounded-md  cursor-pointer"
               >
-                <svg
-                  className="mr-2 h-4 w-4"
-                  aria-hidden="true"
-                  focusable="false"
-                  data-prefix="fab"
-                  data-icon="google"
-                  role="img"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 488 512"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
-                  ></path>
-                </svg>
-                Google
-              </Button>
+                <Image
+                  src="/google-wordmark.svg"
+                  alt="Google"
+                  width={70}
+                  height={24}
+                />
+              </button>
             </motion.div>
           )}
 
@@ -277,95 +276,93 @@ export function SignupForm({
               transition={{ opacity: { duration: 0.2 } }}
               className="grid gap-6"
             >
-              {/* Image Upload Input */}
-              <div className="grid w-full max-w-sm items-center gap-1.5">
-                <Label htmlFor="image">Profile Picture (Optional)</Label>
-                <Input id="image" type="file" {...register("image")} />
-                {errors.image && (
-                  <p className="text-xs text-destructive font-medium flex items-center gap-1">
-                    <span className="inline-block w-1 h-1 rounded-full bg-destructive" />
-                    {errors.image.message as string}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid gap-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  {...register("name")}
-                  placeholder="e.g. Alex Johnson"
-                />
-                {errors.name && (
-                  <p className="text-xs text-destructive font-medium flex items-center gap-1">
-                    <span className="inline-block w-1 h-1 rounded-full bg-destructive" />
-                    {errors.name.message}
-                  </p>
-                )}
-              </div>
-
-              {/* ... Email, Password, Confirm Password ... */}
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  {...register("email")}
-                  placeholder="name@example.com"
-                />
-                {errors.email && (
-                  <p className="text-xs text-destructive font-medium flex items-center gap-1">
-                    <span className="inline-block w-1 h-1 rounded-full bg-destructive" />
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    {...register("password")}
-                    placeholder="••••••••"
-                  />
-                  {errors.password && (
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {/* Image Upload Input */}
+                <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <Label htmlFor="image">Profile Picture (Optional)</Label>
+                  <Input id="image" type="file" {...register("image")} />
+                  {errors.image && (
                     <p className="text-xs text-destructive font-medium flex items-center gap-1">
                       <span className="inline-block w-1 h-1 rounded-full bg-destructive" />
-                      {errors.password.message}
+                      {errors.image.message as string}
                     </p>
                   )}
                 </div>
 
                 <div className="grid gap-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Label htmlFor="name">Full Name</Label>
                   <Input
-                    id="confirmPassword"
-                    type="password"
-                    {...register("confirmPassword")}
-                    placeholder="••••••••"
+                    id="name"
+                    {...register("name")}
+                    placeholder="e.g. Alex Johnson"
                   />
-                  {errors.confirmPassword && (
+                  {errors.name && (
                     <p className="text-xs text-destructive font-medium flex items-center gap-1">
                       <span className="inline-block w-1 h-1 rounded-full bg-destructive" />
-                      {errors.confirmPassword.message}
+                      {errors.name.message}
                     </p>
                   )}
                 </div>
-              </div>
 
-              <Button
-                className="w-full"
-                onClick={handleSubmit(onSubmit)}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                ) : (
-                  "Create Account"
-                )}
-              </Button>
+                {/* Email */}
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email Address</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    {...register("email")}
+                    placeholder="name@example.com"
+                  />
+                  {errors.email && (
+                    <p className="text-xs text-destructive font-medium flex items-center gap-1">
+                      <span className="inline-block w-1 h-1 rounded-full bg-destructive" />
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      {...register("password")}
+                      placeholder="••••••••"
+                    />
+                    {errors.password && (
+                      <p className="text-xs text-destructive font-medium flex items-center gap-1">
+                        <span className="inline-block w-1 h-1 rounded-full bg-destructive" />
+                        {errors.password.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      {...register("confirmPassword")}
+                      placeholder="••••••••"
+                    />
+                    {errors.confirmPassword && (
+                      <p className="text-xs text-destructive font-medium flex items-center gap-1">
+                        <span className="inline-block w-1 h-1 rounded-full bg-destructive" />
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <Button className="w-full" type="submit" disabled={isLoading}>
+                  {isLoading ? (
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  ) : (
+                    "Create Account"
+                  )}
+                </Button>
+              </form>
             </motion.div>
           )}
         </AnimatePresence>
@@ -384,12 +381,12 @@ export function SignupForm({
           )}
           <div className="text-balance text-muted-foreground">
             Already have an account?{" "}
-            <a
+            <Link
               href="/signin"
               className="underline underline-offset-4 hover:text-primary"
             >
               Sign in
-            </a>
+            </Link>
           </div>
         </div>
       </div>
