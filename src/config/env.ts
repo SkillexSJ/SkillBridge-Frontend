@@ -2,7 +2,8 @@ export const env = {
   // Server-side needs full URL, Client-side uses relative (proxy)
   API_URL:
     typeof window === "undefined"
-      ? (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000") + "/api"
+      ? (process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000") +
+        "/api"
       : "/api",
   APP_URL:
     typeof window === "undefined"
