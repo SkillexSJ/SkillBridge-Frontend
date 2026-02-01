@@ -14,30 +14,52 @@
 }
 
 /* Custom grid layout for a "bento" feel */
-.magic-bento-card:nth-child(1) { grid-column: span 12; }
-.magic-bento-card:nth-child(2) { grid-column: span 12; }
-.magic-bento-card:nth-child(3) { grid-column: span 12; }
-.magic-bento-card:nth-child(4) { grid-column: span 12; }
+.magic-bento-card:nth-child(1) {
+  grid-column: span 12;
+}
+.magic-bento-card:nth-child(2) {
+  grid-column: span 12;
+}
+.magic-bento-card:nth-child(3) {
+  grid-column: span 12;
+}
+.magic-bento-card:nth-child(4) {
+  grid-column: span 12;
+}
 
 @media (min-width: 768px) {
-  .magic-bento-card:nth-child(1) { grid-column: span 4; grid-row: span 1; }
-  .magic-bento-card:nth-child(2) { grid-column: span 4; grid-row: span 1; }
-  .magic-bento-card:nth-child(3) { grid-column: span 4; grid-row: span 2; }
-  .magic-bento-card:nth-child(4) { grid-column: span 8; grid-row: span 1; }
+  .magic-bento-card:nth-child(1) {
+    grid-column: span 4;
+    grid-row: span 1;
+  }
+  .magic-bento-card:nth-child(2) {
+    grid-column: span 4;
+    grid-row: span 1;
+  }
+  .magic-bento-card:nth-child(3) {
+    grid-column: span 4;
+    grid-row: span 2;
+  }
+  .magic-bento-card:nth-child(4) {
+    grid-column: span 8;
+    grid-row: span 1;
+  }
 }
 
 .magic-bento-card {
   position: relative;
   border-radius: 1.5rem;
-  padding: 2rem;
+  /* padding: 2rem; REMOVED to allow full bleed images */
   background-color: var(--card); /* Using Tailwind variable */
   border: 1px solid var(--border); /* Using Tailwind variable */
   overflow: hidden;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-h: 240px;
+  min-height: 240px;
 }
 
 .magic-bento-card:hover {
@@ -46,7 +68,7 @@
 
 /* Spotlight/Glow Effect */
 .magic-bento-card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(
@@ -62,7 +84,7 @@
 
 /* Border Glow */
 .magic-bento-card--border-glow::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: -1px;
   background: radial-gradient(
@@ -73,8 +95,8 @@
   opacity: var(--glow-intensity, 0);
   pointer-events: none;
   z-index: 0;
-  mask: 
-    linear-gradient(#fff 0 0) content-box, 
+  mask:
+    linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
   padding: 1px;

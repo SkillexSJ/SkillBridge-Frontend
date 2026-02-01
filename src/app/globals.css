@@ -36,13 +36,12 @@
   --sidebar-border: #c3d0da;
   --sidebar-ring: #00b262;
 
-  --font-sans: Lato, sans-serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-serif:
     Merriweather, Geist, Geist Fallback, ui-serif, Georgia, Cambria,
     "Times New Roman", Times, serif;
-  --font-mono:
-    Roboto Mono, Geist Mono, Geist Mono Fallback, ui-monospace, SFMono-Regular,
-    Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
 
   --radius: 0.25rem;
 
@@ -68,7 +67,7 @@
   --card-foreground: #e9f0f5;
   --popover: #12161f;
   --popover-foreground: #e9f0f5;
-  --primary: #00b262;
+  --primary: #00933f;
   --primary-foreground: #080b14;
   --secondary: #282d3d;
   --secondary-foreground: #e9f0f5;
@@ -144,6 +143,7 @@
 
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
   --font-serif: var(--font-serif);
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -165,8 +165,38 @@
   * {
     @apply border-border outline-ring/50;
   }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
   body {
     @apply bg-background text-foreground;
   }
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--muted-foreground);
+  border-radius: 9999px;
+  opacity: 0.2;
+}
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.5;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}

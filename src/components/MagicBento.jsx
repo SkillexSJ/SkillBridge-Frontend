@@ -53,6 +53,7 @@ export const MagicCard = ({
   disableAnimations = false
 }) => {
   const cardRef = useRef(null);
+  const effectsRef = useRef(null); // Dedicated container for particles/ripples
   const particlesRef = useRef([]);
   const timeoutsRef = useRef([]);
   const isHoveredRef = useRef(false);
@@ -93,7 +94,7 @@ export const MagicCard = ({
   }, []);
 
   const animateParticles = useCallback(() => {
-    if (!cardRef.current || !isHoveredRef.current) return;
+    if (!cardRef.current || !effectsRef.current || !isHoveredRef.current) return;
 
     if (!particlesInitialized.current) {
       initializeParticles();
@@ -101,10 +102,10 @@ export const MagicCard = ({
 
     memoizedParticles.current.forEach((particle, index) => {
       const timeoutId = setTimeout(() => {
-        if (!isHoveredRef.current || !cardRef.current) return;
+        if (!isHoveredRef.current || !effectsRef.current) return;
 
         const clone = particle.cloneNode(true);
-        cardRef.current.appendChild(clone);
+        effectsRef.current.appendChild(clone);
         particlesRef.current.push(clone);
 
         gsap.fromTo(clone, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' });
@@ -136,6 +137,7 @@ export const MagicCard = ({
     if (shouldDisable || !cardRef.current) return;
 
     const element = cardRef.current;
+    const effectsContainer = effectsRef.current;
 
     const handleMouseEnter = () => {
       isHoveredRef.current = true;
@@ -211,7 +213,7 @@ export const MagicCard = ({
     };
 
     const handleClick = e => {
-      if (!clickEffect) return;
+      if (!clickEffect || !effectsContainer) return;
 
       const rect = element.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -237,7 +239,7 @@ export const MagicCard = ({
         z-index: 1000;
       `;
 
-      element.appendChild(ripple);
+      effectsContainer.appendChild(ripple);
 
       gsap.fromTo(
         ripple,
@@ -282,7 +284,14 @@ export const MagicCard = ({
         overflow: 'hidden'
       }}
     >
-      {children}
+      <div 
+        ref={effectsRef} 
+        className="magic-card-effects" 
+        style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0 }} 
+      />
+      <div className="magic-card-content" style={{ position: 'relative', zIndex: 1, height: '100%' }}>
+        {children}
+      </div>
     </div>
   );
 };
@@ -419,8 +428,8 @@ const GlobalSpotlight = ({
   return null;
 };
 
-const BentoCardGrid = ({ children, gridRef }) => (
-  <div className="card-grid bento-section" ref={gridRef}>
+const BentoCardGrid = ({ children, gridRef, className }) => (
+  <div className={`card-grid bento-section ${className || ''}`} ref={gridRef}>
     {children}
   </div>
 );
@@ -442,6 +451,7 @@ const useMobileDetection = () => {
 
 const MagicBento = ({
   children,
+  className,
   enableSpotlight = true,
   disableAnimations = false,
   spotlightRadius = DEFAULT_SPOTLIGHT_RADIUS,
@@ -463,7 +473,7 @@ const MagicBento = ({
         />
       )}
 
-      <BentoCardGrid gridRef={gridRef}>
+      <BentoCardGrid gridRef={gridRef} className={className}>
         {children}
       </BentoCardGrid>
     </>
