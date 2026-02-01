@@ -103,6 +103,17 @@ export function Header({ initialSession }: HeaderProps) {
               {link.label}
             </Link>
           ))}
+          {/* Become a Tutor CTA - Desktop */}
+          <Link
+            href="/onboarding/tutor"
+            className={cn(
+              buttonVariants({ variant: "secondary" }),
+              "rounded-full p-2 font-semibold text-primary bg-primary/10 hover:bg-primary/20 transition-colors border border-primary/20",
+            )}
+          >
+            Become a Tutor
+          </Link>
+
           <ThemeToggle />
 
           {isPending ? (
@@ -175,21 +186,6 @@ export function Header({ initialSession }: HeaderProps) {
                   </Link>
                 </DropdownMenuItem>
 
-                {(session.user as any).role !== "tutor" && (
-                  <DropdownMenuItem
-                    asChild
-                    className="rounded-lg focus:bg-primary/10 focus:text-primary cursor-pointer"
-                  >
-                    <Link
-                      href="/onboarding/tutor"
-                      className="w-full flex items-center gap-2"
-                    >
-                      <GraduationCap className="h-4 w-4" />
-                      <span>Become a Tutor</span>
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-
                 <DropdownMenuSeparator className="my-1 bg-primary/10" />
 
                 <DropdownMenuItem
@@ -222,6 +218,16 @@ export function Header({ initialSession }: HeaderProps) {
           )}
         </div>
         <div className="flex items-center gap-2 md:hidden">
+          {/* Become a Tutor CTA - Mobile */}
+          <Link
+            href="/onboarding/tutor"
+            className={cn(
+              buttonVariants({ variant: "secondary", size: "sm" }),
+              "rounded-full text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 h-8 px-3",
+            )}
+          >
+            Become a Tutor
+          </Link>
           <ThemeToggle />
           <MobileNav />
         </div>
