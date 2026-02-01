@@ -49,13 +49,12 @@ interface TutorCatalogProps {
 interface FilterState {
   activeCategory: string;
   searchQuery: string;
-  sortBy: "recommended" | "price_low" | "price_high" | "rating";
+  sortBy: "experience" | "price_asc" | "price_desc" | "rating";
   filterAvailability: string;
   minPrice: number | "";
   maxPrice: number | "";
   currentPage: number;
 }
-
 // Filter action
 type FilterAction =
   | { type: "SET_CATEGORY"; payload: string }
@@ -88,7 +87,7 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
       return {
         activeCategory: "All Tutors",
         searchQuery: "",
-        sortBy: "recommended",
+        sortBy: "experience",
         filterAvailability: "any",
         minPrice: "",
         maxPrice: "",
@@ -109,7 +108,7 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
   const [filters, dispatch] = useReducer(filterReducer, {
     activeCategory: urlCategory || initialCategory || "All Tutors",
     searchQuery: urlSearch || "",
-    sortBy: "recommended",
+    sortBy: "experience", // Default sort
     filterAvailability: "any",
     minPrice: "",
     maxPrice: "",
@@ -139,12 +138,13 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
 
   // Handle URL params
   useEffect(() => {
-    if (urlCategory) {
+    if (urlCategory && urlCategory !== filters.activeCategory) {
       dispatch({ type: "SET_CATEGORY", payload: urlCategory });
     }
-    if (urlSearch) {
+    if (urlSearch && urlSearch !== filters.searchQuery) {
       dispatch({ type: "SET_SEARCH", payload: urlSearch });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlCategory, urlSearch]);
 
   // Update category changes
@@ -194,11 +194,19 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
       }
     };
 
-    // Fetch tutors initial load
+    // Fetch tutors initial
     if (categories.length > 0 || filters.activeCategory === "All Tutors") {
       fetchTutors();
     }
-  }, [filters, categories]);
+  }, [
+    filters.activeCategory,
+    filters.searchQuery,
+    filters.sortBy,
+    filters.minPrice,
+    filters.maxPrice,
+    filters.currentPage,
+    categories,
+  ]);
 
   // Dynamic category names
   const categoryNames = useMemo(() => {
@@ -211,9 +219,9 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
     value:
       | string
       | number
-      | "recommended"
-      | "price_low"
-      | "price_high"
+      | "experience"
+      | "price_asc"
+      | "price_desc"
       | "rating",
   ) => {
     switch (type) {
@@ -227,9 +235,9 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
         dispatch({
           type: "SET_SORT",
           payload: value as
-            | "recommended"
-            | "price_low"
-            | "price_high"
+            | "experience"
+            | "price_asc"
+            | "price_desc"
             | "rating",
         });
         break;
@@ -245,12 +253,12 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
     }
   };
 
-  // Handle Clear Filters
+  // Clear Filters
   const handleClearFilters = () => {
     dispatch({ type: "RESET_FILTERS" });
   };
 
-  // Handle Page Change
+  //  Page Change
   const handlePageChange = (page: number) => {
     dispatch({ type: "SET_PAGE", payload: page });
   };
