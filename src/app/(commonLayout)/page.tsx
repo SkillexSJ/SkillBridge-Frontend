@@ -1,12 +1,13 @@
 /**
  * COMPONENTS
  */
-import PopularTutors from "@/components/features/Home/PopularTutor";
+
 import FeaturedCategory from "@/components/features/Home/FeaturedCategory";
 import Hero from "@/components/Layouts/Hero";
-import { LogoCloud } from "@/components/logo-cloud";
+import { LogoCloud } from "@/components/features/Home/logo-cloud";
 import { TestimonialsMarqueeDemo2 } from "@/components/features/Home/Testimonials";
 import { RevealOnScroll } from "@/components/shared/reveal-on-scroll";
+import PopularTutors from "@/components/features/Home/PopularTutor";
 
 export default async function Home() {
   return (

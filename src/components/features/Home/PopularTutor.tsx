@@ -4,7 +4,7 @@
  * NODE PACKAGES
  */
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Star, Loader2 } from "lucide-react";
@@ -15,48 +15,18 @@ import { ArrowUpRight, Star, Loader2 } from "lucide-react";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 
 /**
- * SERVICES
+ * HOOKS
  */
-import { getAllTutors } from "@/service/tutor.service";
-import { getAllCategories } from "@/service/category.service";
-
-/**
- * TYPES
- */
-import { TutorResponse } from "@/types/tutor.types";
-import { Category } from "@/types/category.types";
+import { usePopularTutors } from "@/hooks/usePopularTutors";
 
 const PopularTutors: React.FC = () => {
-  // states
-  const [tutors, setTutors] = useState<TutorResponse[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
+  // use custom hook for hybrid caching
+  const { tutors, categories, loading } = usePopularTutors();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [tutorsRes, categoriesRes] = await Promise.all([
-          getAllTutors({ limit: 50, sortBy: "rating" }), // Fetch top rated tutors
-          getAllCategories({ limit: 5 }), // Fetch top categories
-        ]);
+  // Slice to limit tabs if needed
+  const displayedCategories = categories.slice(0, 4);
 
-        if (tutorsRes.success) {
-          setTutors(tutorsRes.data);
-        }
-        if (categoriesRes.success) {
-          setCategories(categoriesRes.data.slice(0, 4)); // 4 tabs
-        }
-      } catch (error) {
-        console.error("Failed to fetch popular tutors data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const categoryNames = ["All", ...categories.map((c) => c.name)];
+  const categoryNames = ["All", ...displayedCategories.map((c) => c.name)];
 
   if (loading) {
     return (

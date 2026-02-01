@@ -35,7 +35,7 @@ import { getAllUsers, blockUser } from "@/service/admin.service";
  */
 import { User } from "@/types/user.types";
 
-import { getUserColumns } from "./table-column";
+import { getUserColumns } from "./user-table-column";
 
 export function UserTable() {
   //states

@@ -1,5 +1,10 @@
 "use client";
 
+
+/**
+ * USED "UseReducer" for filter in this component for better filtering 
+ */
+
 /**
  * NODE PACKAGES
  */
@@ -29,14 +34,14 @@ import { Button } from "@/components/ui/button";
  * SERVICES
  */
 import { getAllTutors } from "@/service/tutor.service";
-import { getAllCategories } from "@/service/category.service";
 
 /**
  * TYPES
  */
 import { TutorResponse, TutorMeta } from "@/types/tutor.types";
-import { Category } from "@/types/types";
+
 import { toast } from "sonner";
+import { useCachedCategories } from "@/hooks/useCategories";
 
 /**
  * INTERFACES
@@ -117,24 +122,11 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
 
   // Data states
   const [tutors, setTutors] = useState<TutorResponse[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  // Use cached categories hook
+  const { categories } = useCachedCategories();
+
   const [meta, setMeta] = useState<TutorMeta>({ page: 1, limit: 12, total: 0 });
   const [loading, setLoading] = useState(true);
-
-  // Fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getAllCategories({ limit: 100 });
-        if (response.success && response.data) {
-          setCategories(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   // Handle URL params
   useEffect(() => {

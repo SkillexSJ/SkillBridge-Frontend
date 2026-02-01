@@ -11,9 +11,8 @@ import { useTheme } from "next-themes";
 /**
  * COMPONENTS
  */
-import { NavMain } from "@/components/features/dashboard/nav-main";
-import { NavSecondary } from "@/components/features/dashboard/nav-secondary";
-import { NavUser } from "@/components/features/dashboard/nav-user";
+import { NavMain } from "@/components/features/dashboard/shared/nav-main";
+import { NavUser } from "@/components/features/dashboard/shared/nav-user";
 import {
   Sidebar,
   SidebarContent,
