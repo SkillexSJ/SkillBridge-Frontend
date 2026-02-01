@@ -1,9 +1,9 @@
-// Main tutor response type from backend API
+// Main tutor response
 export interface TutorResponse {
   id: string;
   bio: string;
   specialty: string;
-  experience: string;
+  experience: number;
   hourlyRate: string;
   location: string | null;
   totalMentoringMins: number;
@@ -12,33 +12,56 @@ export interface TutorResponse {
     name: string;
     image: string | null;
   };
+  categoryId: string;
   category: {
     name: string;
   };
+  expertise: string[];
+  socialLinks: string[];
   averageRating: number;
   reviewCount: number;
+  availabilitySlots?: {
+    dayOfWeek: number;
+    startTime: string;
+    endTime: string;
+  }[];
 
-  // UI-specific optional fields (not in backend response)
-  name?: string; // Derived from user.name
-  role?: string; // Derived from category.name
-  imageUrl?: string; // Derived from user.image
-  rating?: number; // Same as averageRating
-  about?: string; // Same as bio
-  responseTime?: string; // UI default
-  topPercentile?: number; // UI default
-  expertise?: string[]; // Not in listing, only in details
-  industries?: string[]; // UI default
-  socialLinks?: Record<string, string>; // Not in listing, only in details
+  // UI-specific
+  name?: string;
+  role?: string;
+  imageUrl?: string;
+  rating?: number;
+  about?: string;
+  responseTime?: string;
+  topPercentile?: number;
+  industries?: string[];
 }
 
-// Full tutor details response from backend (for individual tutor page)
+export interface Review {
+  id: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  student: {
+    name: string;
+    image: string | null;
+  };
+}
+
+export interface AvailabilitySlot {
+  dayOfWeek: number;
+  startTime: string;
+  endTime: string;
+}
+
+// Full tutor details response
 export interface TutorDetailResponse {
   id: string;
   userId: string;
   categoryId: string;
   bio: string;
   specialty: string;
-  experience: string;
+  experience: number;
   hourlyRate: string;
   location: string | null;
   expertise: string[];
@@ -60,22 +83,27 @@ export interface TutorDetailResponse {
     topics: string[];
     createdAt: string;
   };
-  reviews: any[];
-  availabilitySlots?: any[];
+  reviews: Review[];
+  availabilitySlots?: AvailabilitySlot[];
+  averageRating: number;
+  reviewCount: number;
 }
 
-// Meta information for paginated tutor responses
+// Meta information for pagination
 export interface TutorMeta {
   total: number;
   page: number;
   limit: number;
 }
 
-// Query parameters for fetching tutors
+// Query parameters for tutors
 export interface GetAllTutorsParams {
   page?: number;
   limit?: number;
+  search?: string;
   categoryId?: string;
   specialty?: string;
-  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sortBy?: string;
 }

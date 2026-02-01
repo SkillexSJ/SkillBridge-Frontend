@@ -6,7 +6,8 @@ import { apiClient, FetchOptions } from "@/lib/api-client";
 /**
  * TYPES
  */
-import { ApiResponse, Category } from "@/types/types";
+import { ApiResponse } from "@/types/types";
+import { Category } from "@/types/category.types";
 
 export const getAllCategories = async (
   params?: {

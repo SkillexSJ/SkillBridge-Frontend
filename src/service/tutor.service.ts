@@ -12,10 +12,11 @@ import {
 /**
  * LIBS
  */
-import { apiClient } from "@/lib/api-client";
+import { apiClient, FetchOptions } from "@/lib/api-client";
 
 export const getAllTutors = async (
   params?: GetAllTutorsParams,
+  options?: FetchOptions,
 ): Promise<ApiResponse<TutorResponse[]> & { meta: TutorMeta }> => {
   //  query string
   const queryParams = new URLSearchParams();
@@ -37,13 +38,14 @@ export const getAllTutors = async (
   const queryString = queryParams.toString();
   const endpoint = `/tutors${queryString ? `?${queryString}` : ""}`;
 
-  return apiClient.get(endpoint, { cache: "no-store" });
+  return apiClient.get(endpoint, options);
 };
 
 export const getTutorById = async (
   id: string,
+  options?: FetchOptions,
 ): Promise<ApiResponse<TutorDetailResponse>> => {
-  return apiClient.get(`/tutors/${id}`, { cache: "no-store" });
+  return apiClient.get(`/tutors/${id}`, options);
 };
 
 export interface TutorProfileInput {
