@@ -77,6 +77,7 @@ const signupSchema = z
 
 type SignupValues = z.infer<typeof signupSchema>;
 
+// variants
 const variants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 50 : -50,
@@ -97,7 +98,7 @@ export function SignupForm({
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const [step, setStep] = useState<0 | 1>(0); // 0: Role, 1: Details
+  const [step, setStep] = useState<0 | 1>(0);
   const [direction, setDirection] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -131,7 +132,7 @@ export function SignupForm({
 
   const handleRoleSelect = (selectedRole: "student" | "tutor") => {
     setValue("role", selectedRole);
-    // Add a small delay for visual feedback if needed, or go straight
+    // delay
     paginate(1);
   };
 
@@ -148,8 +149,8 @@ export function SignupForm({
     try {
       let response;
       const intendedRole = data.role;
-      // If user wants to be a tutor, sign them up as a student first
-      // and set a cookie/flag to redirect them to onboarding later.
+
+      //extra trick for tutor
       const roleToSubmit = intendedRole === "tutor" ? "student" : intendedRole;
 
       if (intendedRole === "tutor") {
@@ -157,7 +158,7 @@ export function SignupForm({
       }
 
       if (data.image && data.image[0]) {
-        // Option A: Single Request (Custom Endpoint)
+        //  Single Request (Custom Endpoint)
         response = await authService.signUpWithImage({
           email: data.email,
           password: data.password,
@@ -166,7 +167,7 @@ export function SignupForm({
           imageFile: data.image[0],
         });
       } else {
-        // Option B: Standard Request (Better Auth)
+        //  Standard Request (Better Auth)
         response = await authService.signUp({
           email: data.email,
           password: data.password,
@@ -176,7 +177,7 @@ export function SignupForm({
       }
 
       if (response?.error) {
-        throw new Error(response.error.message || "Failed to create account");
+        toast.error(response.error.message || "Failed to create account");
       }
 
       toast.success("Account created! Please verify your email.");

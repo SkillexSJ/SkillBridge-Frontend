@@ -23,15 +23,15 @@ export function LogoCloud() {
 
 const logos = [
   {
-    src: "coursera.svg",
+    src: "/coursera.svg",
     alt: "Coursera Logo",
   },
   {
-    src: "udemy.svg",
+    src: "/udemy.svg",
     alt: "Udemy Logo",
   },
   {
-    src: "khan_academy.svg",
+    src: "/khan_academy.svg",
     alt: "Khan Academy Logo",
   },
   {
