@@ -51,6 +51,17 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string | null>(null);
   const [isBooking, setIsBooking] = useState(false);
 
+  // Get all days of the week
+  const availableDaysOfWeek = useMemo(() => {
+    return new Set(availabilitySlots.map((slot) => slot.dayOfWeek));
+  }, [availabilitySlots]);
+
+  // Check availability
+  const isDateAvailable = (date: Date) => {
+    const dayOfWeek = date.getDay();
+    return availableDaysOfWeek.has(dayOfWeek);
+  };
+
   // Generating available time
   const timeSlots = useMemo(() => {
     if (!date || !availabilitySlots.length) return [];
@@ -65,6 +76,7 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
     const slots: string[] = [];
     const sessionDurationMinutes = 60;
 
+    // slot generation
     availableSlotsForDay.forEach((slot) => {
       const slotStart = parseISO(slot.startTime);
       const slotEnd = parseISO(slot.endTime);
@@ -110,7 +122,7 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
 
     setIsBooking(true);
     try {
-      // Calculating endTime (assuming 1 hour sessions)
+      // Calculate endTime
       const [hours, minutes] = selectedTimeSlot.split(":").map(Number);
       const startTimeDate = set(date, { hours, minutes });
       const endTimeDate = addMinutes(startTimeDate, 60);
@@ -136,7 +148,7 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
   return (
     <div className="space-y-6">
       {/* Stats Card */}
-      <div className="bg-card border border-border rounded-[2rem] p-8">
+      <div className="bg-card border border-border rounded-4xl p-8">
         <h3 className="text-foreground font-bold mb-6 text-lg">
           Mentor Impact
         </h3>
@@ -202,22 +214,56 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
                 setDate(d);
                 setSelectedTimeSlot(null); // Reset time slot when date changes
               }}
-              disabled={(d) => d < new Date(new Date().setHours(0, 0, 0, 0))}
+              disabled={(d) => {
+                // Disable past dates
+                if (d < new Date(new Date().setHours(0, 0, 0, 0))) return true;
+                // Disable dates with no availability
+                return !isDateAvailable(d);
+              }}
+              modifiers={{
+                available: (d) => {
+                  // Only mark future/today
+                  if (d < new Date(new Date().setHours(0, 0, 0, 0)))
+                    return false;
+                  return isDateAvailable(d);
+                },
+              }}
+              modifiersClassNames={{
+                available:
+                  "relative bg-primary/10 text-primary font-semibold border border-primary/30 hover:bg-primary/20 shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 after:absolute after:inset-0 after:rounded-md after:shadow-[0_0_8px_2px] after:shadow-primary/20 after:pointer-events-none",
+              }}
               className="rounded-md border-none text-foreground"
               classNames={{
                 head_cell: "text-muted-foreground font-normal",
                 cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
                 day: cn(
-                  "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent rounded-md transition-colors",
+                  "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-accent rounded-md transition-all duration-200",
                 ),
                 day_selected:
-                  "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary focus:text-primary-foreground",
-                day_today: "bg-accent text-accent-foreground",
-                day_outside: "text-muted-foreground opacity-50",
-                day_disabled: "text-muted-foreground opacity-50",
+                  "bg-primary text-primary-foreground hover:bg-primary/90 focus:bg-primary focus:text-primary-foreground shadow-lg",
+                day_today: "bg-accent text-accent-foreground font-bold",
+                day_outside: "text-muted-foreground opacity-30",
+                day_disabled:
+                  "text-muted-foreground opacity-30 cursor-not-allowed line-through",
                 day_hidden: "invisible",
               }}
             />
+          </div>
+
+          {/* Calendar Legend */}
+          <div className="mb-6 flex flex-wrap gap-3 justify-center text-xs">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-primary/10 border border-primary/30 shadow-sm shadow-primary/20"></div>
+              <span className="text-muted-foreground">Available</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-accent"></div>
+              <span className="text-muted-foreground">Today</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-muted opacity-30 line-through"></div>
+              <span className="text-muted-foreground">Unavailable</span>
+            </div>
           </div>
 
           {/* Time Slots */}

@@ -10,8 +10,12 @@ import {
   Star,
   CheckCircle2,
   Zap,
+  Facebook,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 /**
  * TYPES
@@ -30,6 +34,19 @@ export const TutorHeader: React.FC<TutorHeaderProps> = ({
   tutor,
   averageRating,
 }) => {
+  const getSocialLink = (platform: string) => {
+    if (!Array.isArray(tutor.socialLinks)) return "";
+    const link = tutor.socialLinks.find((link: string) =>
+      link.toLowerCase().includes(platform),
+    );
+    if (!link) return "";
+    return link.startsWith("http") ? link : `https://${link}`;
+  };
+
+  const facebookLink = getSocialLink("facebook");
+  const linkedinLink = getSocialLink("linkedin");
+  const xLink = getSocialLink("twitter") || getSocialLink("x.com");
+
   return (
     <div className="relative bg-card/50 border-b border-border pb-8">
       {/* Banner */}
@@ -72,7 +89,7 @@ export const TutorHeader: React.FC<TutorHeaderProps> = ({
                 </div>
                 <div className="flex items-center gap-1.5">
                   <Zap className="w-4 h-4" />
-                  <span>{tutor.experience}</span>
+                  <span>{tutor.experience} Years Exp.</span>
                 </div>
               </div>
             </div>
@@ -91,15 +108,56 @@ export const TutorHeader: React.FC<TutorHeaderProps> = ({
             </div>
 
             <div className="flex gap-2">
-              <button className="p-3 bg-card hover:bg-accent text-muted-foreground hover:text-foreground rounded-xl border border-border transition-all">
-                <MessageSquare className="w-5 h-5" />
-              </button>
-              <button className="p-3 bg-card hover:bg-accent text-muted-foreground hover:text-red-500 rounded-xl border border-border transition-all">
-                <Heart className="w-5 h-5" />
-              </button>
-              <button className="p-3 bg-card hover:bg-accent text-muted-foreground hover:text-foreground rounded-xl border border-border transition-all">
-                <Share2 className="w-5 h-5" />
-              </button>
+              {facebookLink ? (
+                <Link
+                  href={facebookLink}
+                  target="_blank"
+                  className="p-3 bg-card hover:bg-blue-600 hover:text-white text-muted-foreground rounded-xl border border-border transition-all"
+                >
+                  <Facebook className="w-5 h-5" />
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className="p-3 bg-card/50 text-muted-foreground/30 rounded-xl border border-border cursor-not-allowed"
+                >
+                  <Facebook className="w-5 h-5" />
+                </button>
+              )}
+
+              {linkedinLink ? (
+                <Link
+                  href={linkedinLink}
+                  target="_blank"
+                  className="p-3 bg-card hover:bg-blue-700 hover:text-white text-muted-foreground rounded-xl border border-border transition-all"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className="p-3 bg-card/50 text-muted-foreground/30 rounded-xl border border-border cursor-not-allowed"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </button>
+              )}
+
+              {xLink ? (
+                <Link
+                  href={xLink}
+                  target="_blank"
+                  className="p-3 bg-card hover:bg-black hover:text-white text-muted-foreground rounded-xl border border-border transition-all"
+                >
+                  <Twitter className="w-5 h-5" />
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className="p-3 bg-card/50 text-muted-foreground/30 rounded-xl border border-border cursor-not-allowed"
+                >
+                  <Twitter className="w-5 h-5" />
+                </button>
+              )}
             </div>
           </div>
         </div>

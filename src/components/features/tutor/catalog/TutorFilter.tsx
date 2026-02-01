@@ -35,7 +35,7 @@ interface TutorFilterProps {
   onSearchChange: (q: string) => void;
   sortBy: string;
   onSortChange: (
-    s: "recommended" | "price_low" | "price_high" | "rating",
+    s: "experience" | "price_asc" | "price_desc" | "rating",
   ) => void;
   filterAvailability: string;
   onAvailabilityChange: (a: string) => void;
@@ -54,7 +54,7 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
   const isVertical = layout === "vertical";
   const [inputValue, setInputValue] = useState(searchQuery);
 
-  // Sync local state with prop
+  //  local state with prop
   useEffect(() => {
     setInputValue(searchQuery);
   }, [searchQuery]);
@@ -103,22 +103,19 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
                     onValueChange={(val) => onSortChange(val as any)}
                   >
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem
-                        value="recommended"
-                        id="sort-recommended"
-                      />
-                      <Label htmlFor="sort-recommended">Recommended</Label>
+                      <RadioGroupItem value="experience" id="sort-experience" />
+                      <Label htmlFor="sort-experience">Most Experienced</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="rating" id="sort-rating" />
                       <Label htmlFor="sort-rating">Highest Rated</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="price_low" id="sort-price-low" />
+                      <RadioGroupItem value="price_asc" id="sort-price-low" />
                       <Label htmlFor="sort-price-low">Price: Low to High</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="price_high" id="sort-price-high" />
+                      <RadioGroupItem value="price_desc" id="sort-price-high" />
                       <Label htmlFor="sort-price-high">
                         Price: High to Low
                       </Label>
@@ -173,10 +170,10 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
                     onValueChange={(val) => onSortChange(val as any)}
                   >
                     <DropdownMenuRadioItem
-                      value="recommended"
+                      value="experience"
                       className="focus:bg-accent focus:text-accent-foreground"
                     >
-                      Recommended
+                      Most Experienced
                     </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem
                       value="rating"
@@ -185,13 +182,13 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
                       Highest Rated
                     </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem
-                      value="price_low"
+                      value="price_asc"
                       className="focus:bg-accent focus:text-accent-foreground"
                     >
                       Price: Low to High
                     </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem
-                      value="price_high"
+                      value="price_desc"
                       className="focus:bg-accent focus:text-accent-foreground"
                     >
                       Price: High to Low

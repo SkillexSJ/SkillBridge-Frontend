@@ -1,21 +1,34 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  Plus_Jakarta_Sans,
+  JetBrains_Mono,
+} from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
+  variable: "--font-bricolage",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  variable: "--font-jakarta",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains",
 });
 
 export const metadata: Metadata = {
   title: "Skill Bridge",
   description: "Connect with Expert Tutors, Learn Anything",
+  icons: {
+    icon: "/favicon2.svg",
+  },
 };
 
 export default function RootLayout({
@@ -24,11 +37,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${jakarta.variable} ${bricolage.variable} ${jetbrains.variable}`}
+    >
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} bg-background antialiased`}
+        className="bg-background antialiased font-sans"
       >
+        {/* <script src="https://tweakcn.com/live-preview.min.js"></script> */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -36,6 +54,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Toaster position="top-right" />
         </ThemeProvider>
       </body>
     </html>
