@@ -57,6 +57,7 @@ export interface TutorProfileInput {
   location?: string;
   expertise?: string[];
   socialLinks?: string[];
+  availability?: AvailabilitySlotInput[];
 }
 
 export const createTutorProfile = async (

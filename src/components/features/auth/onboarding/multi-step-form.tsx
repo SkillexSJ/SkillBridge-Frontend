@@ -1,10 +1,10 @@
 "use client";
 
-/**
- * NODE PACKAGES
- */
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useForm, useFieldArray, Controller } from "react-hook-form"; // NEW
+import { zodResolver } from "@hookform/resolvers/zod"; // NEW
+import * as z from "zod"; // NEW
 import {
   ChevronLeft,
   ChevronRight,
@@ -15,10 +15,8 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
-/**
- * COMPONENTS
- */
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,35 +36,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
 
-/**
- * UTILS
- */
 import { cn } from "@/lib/utils";
-
-/**
- * SERVICES
- */
 import {
   createTutorProfile,
   updateTutorAvailability,
-  AvailabilitySlotInput,
 } from "@/service/tutor.service";
 import { getAllCategories } from "@/service/category.service";
 import { Category } from "@/types/category.types";
 
-/**
- * TYPES
- */
+// --- 1. ZOD SCHEMA (Centralized Validation) ---
+const tutorFormSchema = z.object({
+  // Step 1: Profile
+  bio: z.string().min(10, "Bio must be at least 10 characters"),
+  experience: z.coerce.number().min(0, "Experience cannot be negative"),
+  location: z.string().optional(),
 
-/**
- * CONSTANTS
- */
-const steps = [
-  { id: "profile", title: "Profile Details" },
-  { id: "expertise", title: "Expertise & Rate" },
-  { id: "availability", title: "Availability" },
+  // Step 2: Expertise
+  categoryId: z.string().min(1, "Please select a category"),
+  hourlyRate: z.coerce.number().min(1, "Rate must be at least $1"),
+  expertise: z.array(z.string()).min(1, "Add at least one skill"),
+
+  // Step 3: Availability
+  availability: z
+    .array(
+      z.object({
+        dayOfWeek: z.coerce.number(),
+        startTime: z.string().min(1, "Required"),
+        endTime: z.string().min(1, "Required"),
+      }),
+    )
+    .min(1, "Please add at least one availability slot")
+    .refine((slots) => slots.every((slot) => slot.endTime > slot.startTime), {
+      message: "End time must be after start time",
+    }),
+});
+
+type TutorFormValues = z.infer<typeof tutorFormSchema>;
+
+type Step = {
+  id: string;
+  title: string;
+  fields: (keyof TutorFormValues)[];
+};
+
+const steps: Step[] = [
+  {
+    id: "profile",
+    title: "Profile Details",
+    fields: ["bio", "experience", "location"],
+  },
+  {
+    id: "expertise",
+    title: "Expertise & Rate",
+    fields: ["categoryId", "hourlyRate", "expertise"],
+  },
+  { id: "availability", title: "Availability", fields: ["availability"] },
 ];
 
 const DAYS = [
@@ -79,9 +104,6 @@ const DAYS = [
   { value: 6, label: "Saturday" },
 ];
 
-/**
- * ANIMATIONS
- */
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
@@ -90,29 +112,42 @@ const fadeInUp = {
 export default function MultiStepTutorForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-
-  // Form State
-  const [formData, setFormData] = useState({
-    bio: "",
-    experience: 0,
-    location: "",
-    categoryId: "",
-    specialty: "",
-    hourlyRate: "",
-    expertise: [] as string[],
-  });
-
   const [tagInput, setTagInput] = useState("");
 
-  const [availability, setAvailability] = useState<AvailabilitySlotInput[]>([
-    { dayOfWeek: 1, startTime: "09:00", endTime: "17:00" }, // Default Monday
-  ]);
+  // --- 2. REACT HOOK FORM SETUP ---
+  const form = useForm({
+    resolver: zodResolver(tutorFormSchema),
+    defaultValues: {
+      bio: "",
+      experience: 0,
+      location: "",
+      categoryId: "",
+      hourlyRate: 25,
+      expertise: [],
+      availability: [{ dayOfWeek: 1, startTime: "09:00", endTime: "17:00" }],
+    },
+    mode: "onChange",
+  });
 
-  /**
-   * Category Fetching
-   */
+  const {
+    register,
+    control,
+    handleSubmit,
+    trigger,
+    setValue,
+    watch,
+    formState: { errors, isSubmitting },
+  } = form;
+
+  // Handles the array of availability slots
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "availability",
+  });
+
+  const currentExpertise = watch("expertise");
+
   useEffect(() => {
     async function fetchCats() {
       try {
@@ -125,165 +160,67 @@ export default function MultiStepTutorForm() {
     fetchCats();
   }, []);
 
-  const updateFormData = (field: string, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const addSlot = () => {
-    setAvailability([
-      ...availability,
-      { dayOfWeek: 1, startTime: "09:00", endTime: "17:00" },
-    ]);
-  };
-
-  const removeSlot = (index: number) => {
-    setAvailability(availability.filter((_, i) => i !== index));
-  };
-
-  const updateSlot = (
-    index: number,
-    field: keyof AvailabilitySlotInput,
-    value: any,
-  ) => {
-    const newSlots = [...availability];
-    newSlots[index] = { ...newSlots[index], [field]: value };
-    setAvailability(newSlots);
-  };
-
-  const addCurrentTag = () => {
+  // --- 3. TAG HANDLING ---
+  const addTag = () => {
     const tag = tagInput.trim().replace(",", "");
-    if (tag && !formData.expertise.includes(tag)) {
-      setFormData((prev) => ({
-        ...prev,
-        expertise: [...prev.expertise, tag],
-      }));
+    if (tag && !currentExpertise.includes(tag)) {
+      setValue("expertise", [...currentExpertise, tag], {
+        shouldValidate: true,
+      });
       setTagInput("");
     }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setValue(
+      "expertise",
+      currentExpertise.filter((t) => t !== tagToRemove),
+      { shouldValidate: true },
+    );
   };
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
-      addCurrentTag();
+      addTag();
     }
   };
 
-  const removeTag = (tagToRemove: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      expertise: prev.expertise.filter((tag) => tag !== tagToRemove),
-    }));
-  };
-
-  const nextStep = () => {
-    if (!validateStep(currentStep)) return;
-    if (currentStep < steps.length - 1) setCurrentStep((prev) => prev + 1);
+  // --- 4. NAVIGATION LOGIC ---
+  const nextStep = async () => {
+    const fields = steps[currentStep].fields as any[];
+    // Trigger validation ONLY for fields in the current step
+    const isStepValid = await trigger(fields, { shouldFocus: true });
+    if (isStepValid) {
+      if (currentStep < steps.length - 1) setCurrentStep((prev) => prev + 1);
+    }
   };
 
   const prevStep = () => {
     if (currentStep > 0) setCurrentStep((prev) => prev - 1);
   };
 
-  const handleSubmit = async () => {
-    if (!validateStep(currentStep)) return;
-    setIsSubmitting(true);
-    let profileCreated = false;
-
+  // handle submit
+  const onSubmit = async (data: TutorFormValues) => {
     try {
-      // 1. Create Profile
-      try {
-        await createTutorProfile({
-          ...formData,
-          experience: Number(formData.experience),
-          hourlyRate: Number(formData.hourlyRate),
-          expertise: formData.expertise,
-          specialty: formData.expertise.join(", "), // Derived from tags
-          socialLinks: [], // Optional
-        });
-        profileCreated = true;
-      } catch (error: any) {
-        if (error.message?.includes("already exists")) {
-          profileCreated = true;
-        } else {
-          throw error;
-        }
-      }
-
-      // 2. Update Availability
-      if (availability.length > 0) {
-        // numbers/strings as expected
-        const cleanSlots = availability.map((s) => ({
-          dayOfWeek: Number(s.dayOfWeek),
-          startTime: s.startTime,
-          endTime: s.endTime,
-        }));
-        await updateTutorAvailability(cleanSlots);
-      }
+      // Create Profile with availability
+      await createTutorProfile({
+        bio: data.bio,
+        experience: data.experience,
+        location: data.location,
+        categoryId: data.categoryId,
+        hourlyRate: data.hourlyRate,
+        expertise: data.expertise,
+        specialty: data.expertise.join(", "),
+        socialLinks: [],
+        availability: data.availability,
+      });
 
       toast.success("Profile created successfully!");
-      // Clear intent cookie
-      document.cookie =
-        "intended_role=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "intended_role=; path=/; max-age=0";
       router.push("/dashboard");
     } catch (error: any) {
-      if (profileCreated) {
-        toast.warning(
-          "Profile created, but availability could not be saved. Please update it in your dashboard.",
-        );
-        router.push("/dashboard");
-      } else {
-        toast.error(error.message || "Failed to create profile");
-      }
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const validateStep = (step: number) => {
-    switch (step) {
-      case 0: // Profile
-        if (formData.bio.length <= 10) {
-          toast.error("Bio must be longer than 10 characters");
-          return false;
-        }
-        if (Number(formData.experience) < 0) {
-          toast.error("Experience cannot be negative");
-          return false;
-        }
-        return true;
-      case 1: // Expertise
-        if (!formData.categoryId) {
-          toast.error("Please select a category");
-          return false;
-        }
-        if (formData.expertise.length === 0) {
-          toast.error("Please add at least one expertise tag");
-          return false;
-        }
-        if (Number(formData.hourlyRate) <= 0 || !formData.hourlyRate) {
-          toast.error("Please enter a valid hourly rate");
-          return false;
-        }
-        return true;
-      case 2: // Availability
-        if (availability.length === 0) {
-          toast.error("Please add at least one availability slot");
-          return false;
-        }
-        for (let i = 0; i < availability.length; i++) {
-          const slot = availability[i];
-          if (!slot.startTime || !slot.endTime) {
-            toast.error("Please fill in start and end times for all slots");
-            return false;
-          }
-          if (slot.startTime >= slot.endTime) {
-            toast.error(`Slot ${i + 1}: End time must be after start time`);
-            return false;
-          }
-        }
-        return true;
-      default:
-        return true;
+      toast.error(error.message || "Failed to create profile");
     }
   };
 
@@ -308,8 +245,7 @@ export default function MultiStepTutorForm() {
             </span>
           </div>
         ))}
-        {/* Progress Bar Background */}
-        <div className="absolute top-[44px] left-0 w-full h-0.5 bg-muted z-0 hidden md:block" />
+        <div className="absolute top-[15px] left-0 w-full h-0.5 bg-muted z-0 hidden md:block" />
       </div>
 
       <motion.div
@@ -324,6 +260,7 @@ export default function MultiStepTutorForm() {
               Step {currentStep + 1} of {steps.length}
             </CardDescription>
           </CardHeader>
+
           <CardContent className="min-h-[300px]">
             <AnimatePresence mode="wait">
               <motion.div
@@ -334,77 +271,89 @@ export default function MultiStepTutorForm() {
                 variants={fadeInUp}
                 className="space-y-6"
               >
+                {/* STEP 0: PROFILE */}
                 {currentStep === 0 && (
                   <>
                     <div className="space-y-2">
                       <Label>Bio</Label>
                       <Textarea
+                        {...register("bio")}
                         placeholder="Tell students about yourself..."
                         className="min-h-[100px]"
-                        value={formData.bio}
-                        onChange={(e) => updateFormData("bio", e.target.value)}
                       />
-                      <p className="text-xs text-muted-foreground">
-                        Min 10 characters
-                      </p>
+                      {errors.bio && (
+                        <p className="text-sm text-destructive">
+                          {errors.bio.message}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label>Experience (Years)</Label>
                       <Input
                         type="number"
+                        {...register("experience")}
                         placeholder="e.g. 5"
-                        min={0}
-                        value={formData.experience}
-                        onChange={(e) =>
-                          updateFormData("experience", e.target.value)
-                        }
                       />
+                      {errors.experience && (
+                        <p className="text-sm text-destructive">
+                          {errors.experience.message}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label>Location (Optional)</Label>
                       <Input
+                        {...register("location")}
                         placeholder="City, Country"
-                        value={formData.location}
-                        onChange={(e) =>
-                          updateFormData("location", e.target.value)
-                        }
                       />
                     </div>
                   </>
                 )}
 
+                {/* STEP 1: EXPERTISE */}
                 {currentStep === 1 && (
                   <>
                     <div className="space-y-2">
                       <Label>Category</Label>
-                      <Select
-                        value={formData.categoryId}
-                        onValueChange={(val) =>
-                          updateFormData("categoryId", val)
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {categories.map((c) => (
-                            <SelectItem key={c.id} value={c.id}>
-                              {c.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <Controller
+                        control={control}
+                        name="categoryId"
+                        render={({ field }) => (
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categories.map((c) => (
+                                <SelectItem key={c.id} value={c.id}>
+                                  {c.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                      {errors.categoryId && (
+                        <p className="text-sm text-destructive">
+                          {errors.categoryId.message}
+                        </p>
+                      )}
                     </div>
+
                     <div className="space-y-2">
-                      <Label>Expertise ({formData.expertise.length})</Label>
+                      <Label>Expertise ({currentExpertise.length})</Label>
                       <div className="flex flex-wrap gap-2 mb-2">
-                        {formData.expertise.map((tag) => (
+                        {currentExpertise.map((tag) => (
                           <div
                             key={tag}
                             className="flex items-center gap-1 bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm"
                           >
                             <span>{tag}</span>
                             <button
+                              type="button"
                               onClick={() => removeTag(tag)}
                               className="text-muted-foreground hover:text-foreground"
                             >
@@ -424,101 +373,119 @@ export default function MultiStepTutorForm() {
                           type="button"
                           size="icon"
                           variant="outline"
-                          onClick={addCurrentTag}
+                          onClick={addTag}
                         >
                           <Plus className="w-4 h-4" />
                         </Button>
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Press Enter or click + to add
-                      </p>
+                      {errors.expertise && (
+                        <p className="text-sm text-destructive">
+                          {errors.expertise.message}
+                        </p>
+                      )}
                     </div>
+
                     <div className="space-y-2">
                       <Label>Hourly Rate ($)</Label>
                       <Input
                         type="number"
+                        {...register("hourlyRate")}
                         placeholder="25"
-                        value={formData.hourlyRate}
-                        onChange={(e) =>
-                          updateFormData("hourlyRate", e.target.value)
-                        }
                       />
+                      {errors.hourlyRate && (
+                        <p className="text-sm text-destructive">
+                          {errors.hourlyRate.message}
+                        </p>
+                      )}
                     </div>
                   </>
                 )}
 
+                {/* STEP 2: AVAILABILITY */}
                 {currentStep === 2 && (
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
                       <Label>Weekly Availability</Label>
-                      <Button size="sm" variant="outline" onClick={addSlot}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        type="button"
+                        onClick={() =>
+                          append({
+                            dayOfWeek: 1,
+                            startTime: "09:00",
+                            endTime: "17:00",
+                          })
+                        }
+                      >
                         <Plus className="w-4 h-4 mr-1" /> Add Slot
                       </Button>
                     </div>
 
-                    {availability.length === 0 && (
-                      <p className="text-sm text-muted-foreground text-center py-8">
-                        No availability slots added.
+                    {errors.availability && (
+                      <p className="text-sm text-destructive">
+                        {errors.availability.message ||
+                          errors.availability.root?.message}
                       </p>
                     )}
 
                     <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
-                      {availability.map((slot, idx) => (
+                      {fields.map((field, index) => (
                         <div
-                          key={idx}
+                          key={field.id}
                           className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-2 p-3 border rounded-lg bg-card/50"
                         >
-                          {/* Day Selection + Mobile Delete */}
                           <div className="flex items-center gap-2 w-full sm:w-auto">
-                            <Select
-                              value={slot.dayOfWeek.toString()}
-                              onValueChange={(val) =>
-                                updateSlot(idx, "dayOfWeek", Number(val))
-                              }
-                            >
-                              <SelectTrigger className="flex-1 sm:w-[130px]">
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {DAYS.map((d) => (
-                                  <SelectItem
-                                    key={d.value}
-                                    value={d.value.toString()}
-                                  >
-                                    {d.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                            <Controller
+                              control={control}
+                              name={`availability.${index}.dayOfWeek`}
+                              render={({ field }) => (
+                                <Select
+                                  onValueChange={(val) =>
+                                    field.onChange(Number(val))
+                                  }
+                                  value={String(field.value)}
+                                >
+                                  <SelectTrigger className="flex-1 sm:w-[130px]">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    {DAYS.map((d) => (
+                                      <SelectItem
+                                        key={d.value}
+                                        value={d.value.toString()}
+                                      >
+                                        {d.label}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              )}
+                            />
 
+                            {/* Mobile Delete */}
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => removeSlot(idx)}
-                              className="sm:hidden text-destructive hover:bg-destructive/10 shrink-0"
+                              type="button"
+                              onClick={() => remove(index)}
+                              className="sm:hidden text-destructive shrink-0"
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
                           </div>
 
-                          {/* Time Inputs */}
                           <div className="flex items-center gap-2 w-full sm:w-auto">
                             <Input
                               type="time"
                               className="flex-1 sm:w-[120px]"
-                              value={slot.startTime}
-                              onChange={(e) =>
-                                updateSlot(idx, "startTime", e.target.value)
-                              }
+                              {...register(`availability.${index}.startTime`)}
                             />
                             <span className="text-muted-foreground">-</span>
                             <Input
                               type="time"
                               className="flex-1 sm:w-[120px]"
-                              value={slot.endTime}
-                              onChange={(e) =>
-                                updateSlot(idx, "endTime", e.target.value)
-                              }
+                              {...register(`availability.${index}.endTime`)}
                             />
                           </div>
 
@@ -526,7 +493,8 @@ export default function MultiStepTutorForm() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => removeSlot(idx)}
+                            type="button"
+                            onClick={() => remove(index)}
                             className="hidden sm:inline-flex text-destructive hover:bg-destructive/10"
                           >
                             <Trash2 className="w-4 h-4" />
@@ -539,6 +507,7 @@ export default function MultiStepTutorForm() {
               </motion.div>
             </AnimatePresence>
           </CardContent>
+
           <CardFooter className="flex justify-between">
             <Button
               variant="outline"
@@ -549,7 +518,7 @@ export default function MultiStepTutorForm() {
             </Button>
 
             {currentStep === steps.length - 1 ? (
-              <Button onClick={handleSubmit} disabled={isSubmitting}>
+              <Button onClick={handleSubmit(onSubmit)} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving...
@@ -561,7 +530,8 @@ export default function MultiStepTutorForm() {
                 )}
               </Button>
             ) : (
-              <Button onClick={nextStep} disabled={isSubmitting}>
+              // Type button prevents form submission on Enter
+              <Button type="button" onClick={nextStep} disabled={isSubmitting}>
                 Next <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             )}
