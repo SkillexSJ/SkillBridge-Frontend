@@ -139,7 +139,7 @@ export const TutorBookingSidebar: React.FC<TutorBookingSidebarProps> = ({
       });
 
       toast.success("Booking request sent successfully!");
-      router.push("/dashboard/bookings"); // Redirect to bookings
+      router.push("/student/bookings"); // Redirect to bookings
     } catch (error: any) {
       toast.error("Failed to book session");
     } finally {

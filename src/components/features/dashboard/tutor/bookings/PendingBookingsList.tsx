@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,27 +30,51 @@ export function PendingBookingsList({
   onUpdate,
 }: PendingBookingsListProps) {
   const [bookings, setBookings] = useState<Booking[]>(initialBookings);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setBookings(initialBookings);
+  }, [initialBookings]);
 
   const handleAction = async (
     id: string,
     action: "confirmed" | "cancelled",
   ) => {
+    // Optimistic Update
+    const previousBookings = [...bookings];
+    setBookings((prev) => prev.filter((b) => b.id !== id));
+    const toastId = toast.loading("Processing...");
+
     try {
       const response = await updateBookingStatus(id, action);
       if (response.success) {
         toast.success(
           `Booking ${action === "confirmed" ? "accepted" : "declined"}`,
+          {
+            id: toastId,
+          },
         );
-        setBookings((prev) => prev.filter((b) => b.id !== id));
+        startTransition(() => {
+          router.refresh();
+        });
         if (onUpdate) {
           onUpdate();
         }
       } else {
-        toast.error(response.message || `Failed to ${action} booking`);
+        // Revert UI on failure
+        setBookings(previousBookings);
+        toast.error(response.message || `Failed to ${action} booking`, {
+          id: toastId,
+        });
       }
     } catch (error) {
+      // Revert UI on error
+      setBookings(previousBookings);
       console.error(error);
-      toast.error(`An error occurred`);
+      toast.error(`An error occurred`, {
+        id: toastId,
+      });
     }
   };
 

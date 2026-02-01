@@ -35,8 +35,8 @@ const logos = [
     alt: "Khan Academy Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/turso-wordmark.svg",
-    alt: "Turso Logo",
+    src: "/skillshare.svg",
+    alt: "Skillshare Logo",
   },
   {
     src: "https://storage.efferd.com/logo/vercel-wordmark.svg",
@@ -47,11 +47,11 @@ const logos = [
     alt: "GitHub Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/claude-wordmark.svg",
-    alt: "Claude AI Logo",
+    src: "codecademy.svg",
+    alt: "Code Academy Logo",
   },
   {
-    src: "https://storage.efferd.com/logo/clerk-wordmark.svg",
-    alt: "Clerk Logo",
+    src: "duolingosvg.svg",
+    alt: "Duolingo Logo",
   },
 ];

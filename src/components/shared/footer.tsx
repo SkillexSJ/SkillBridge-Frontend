@@ -15,7 +15,7 @@ const Footer = () => {
     <footer className="relative  pt-20 pb-10 overflow-hidden border-t border-border">
       {/* 1. BACKGROUND TYPOGRAPHY (The Brand Base) */}
       <div className="absolute bottom-0 left-0 right-0 select-none pointer-events-none overflow-hidden z-0 flex justify-center opacity-10 dark:opacity-65 md:dark:opacity-50">
-        <h1 className="text-[18vw] md:text-[15vw] font-black text-foreground tracking-tighter leading-none -mb-4 md:-mb-11 whitespace-nowrap bg-linear-to-b from-primary/60 to-transparent bg-clip-text text-transparent">
+        <h1 className="text-[18vw] md:text-[15vw] font-black tracking-tighter leading-none -mb-4 md:-mb-11 whitespace-nowrap bg-linear-to-b from-primary/60 to-transparent bg-clip-text text-transparent">
           SKILLBRIDGE
         </h1>
       </div>
@@ -44,9 +44,9 @@ const Footer = () => {
               />
               <Button
                 size="icon"
-                className="h-auto w-14 aspect-square rounded-md bg-primary hover:bg-primary/90 text-primary-foreground"
+                className="h-auto w-20   rounded-r-full bg-primary hover:bg-primary/90 text-primary-foreground"
               >
-                <ArrowRight className="w-6 h-6" />
+                <ArrowRight size={24} />
               </Button>
             </div>
           </div>
@@ -59,7 +59,7 @@ const Footer = () => {
             <ul className="space-y-4 text-muted-foreground font-medium text-base md:text-lg">
               <li>
                 <Link
-                  href="#"
+                  href="/about"
                   className="hover:text-primary transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   About
@@ -67,23 +67,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="/tutors"
-                  className="hover:text-primary transition-colors hover:translate-x-1 inline-block duration-200"
-                >
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="hover:text-primary transition-colors hover:translate-x-1 inline-block duration-200"
-                >
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
+                  href="/blog"
                   className="hover:text-primary transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Blog
@@ -91,7 +75,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/careers"
                   className="hover:text-primary transition-colors hover:translate-x-1 inline-block duration-200"
                 >
                   Careers
@@ -100,7 +84,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* COLUMN C: CONTACT & SOCIALS (Right col on mobile) */}
+          {/* COLUMN C: CONTACT & SOCIALS */}
           <div className="col-span-1 lg:col-span-3 order-3 lg:order-3 flex flex-col items-end text-right pr-4 md:pr-0 md:items-end">
             <h3 className="text-sm font-bold mb-6 text-foreground uppercase tracking-widest">
               Contact

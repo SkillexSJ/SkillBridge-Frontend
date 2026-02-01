@@ -201,7 +201,7 @@ const Hero = () => {
           <MagicBento className={""} glowColor="0, 178, 99">
             {/* CARD 1: MENTOR STATS */}
             <MagicCard
-              className="min-h-62.5 flex flex-col justify-between p-8"
+              className="min-h-62.5 flex flex-col justify-between p-5 md:p-8"
               glowColor="0, 178, 98"
             >
               <div className="space-y-6">
@@ -212,7 +212,7 @@ const Hero = () => {
                   <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-4xl font-bold text-foreground mb-2">
+                  <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                     200K+
                   </h3>
                   <p className="text-muted-foreground text-sm">
@@ -229,7 +229,7 @@ const Hero = () => {
 
             {/* CARD 2: USER STATS */}
             <MagicCard
-              className="min-h-62.5 flex flex-col justify-between p-8"
+              className="min-h-62.5 flex flex-col justify-between p-5 md:p-8"
               glowColor="0, 178, 98"
             >
               <div className="space-y-6">
@@ -240,7 +240,7 @@ const Hero = () => {
                   <ArrowUpRight className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <div>
-                  <h3 className="text-4xl font-bold text-foreground mb-2">
+                  <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
                     500K+
                   </h3>
                   <p className="text-muted-foreground text-sm">
@@ -257,7 +257,7 @@ const Hero = () => {
 
             {/* CARD 3: BOOKING CTA (Right Vertical) */}
             <MagicCard
-              className="min-h-62.5 relative group overflow-hidden"
+              className="hidden md:flex min-h-62.5 relative group overflow-hidden"
               glowColor="0, 178, 98"
               clickEffect={true}
             >
@@ -291,10 +291,10 @@ const Hero = () => {
             >
               <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 {/* Left Side */}
-                <div className="flex-1 space-y-4">
+                <div className="flex-1 space-y-4 text-center md:text-left">
                   <h3 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-none uppercase">
                     EXPLORE <span className="text-primary/80">Your</span> <br />
-                    <span className="flex items-center gap-3">
+                    <span className="flex items-center justify-center md:justify-start gap-3">
                       <span className="w-8 h-8 rounded-full bg-zinc-200 border border-zinc-300 dark:bg-zinc-800 dark:border-zinc-700 block" />{" "}
                       <span className="w-8 h-8 rounded-full bg-zinc-300 border border-zinc-400 dark:bg-zinc-700 dark:border-zinc-600 block -ml-6" />
                       <span className="text-transparent bg-clip-text bg-linear-to-r from-zinc-900 to-zinc-500 dark:from-white dark:to-zinc-500">

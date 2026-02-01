@@ -22,7 +22,7 @@ import {
 
 export function TestimonialsMarqueeDemo2() {
   return (
-    <section className="py-24 overflow-hidden">
+    <div className="py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 text-center">
         <h2 className="text-5xl md:text-7xl font-bold tracking-tight text-foreground mb-4">
           What People Say About{" "}
@@ -34,7 +34,7 @@ export function TestimonialsMarqueeDemo2() {
         </p>
       </div>
 
-      <div className="w-full space-y-4 bg-background [&_.rfm-initial-child-container]:items-stretch! [&_.rfm-marquee]:items-stretch!">
+      <div className="w-full space-y-4 bg-background overflow-hidden [&_.rfm-initial-child-container]:items-stretch! [&_.rfm-marquee]:items-stretch!">
         {[TESTIMONIALS_1, TESTIMONIALS_2].map((list, index) => (
           <Marquee key={index} className="border-y border-edge">
             <MarqueeFade side="left" />
@@ -80,7 +80,7 @@ export function TestimonialsMarqueeDemo2() {
           </Marquee>
         ))}
       </div>
-    </section>
+    </div>
   );
 }
 

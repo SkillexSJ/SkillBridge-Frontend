@@ -7,6 +7,7 @@ import {
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import LenisProvider from "@/providers/lenis-provider";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -26,9 +27,10 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Skill Bridge",
   description: "Connect with Expert Tutors, Learn Anything",
-  icons: {
-    icon: "/favicon2.svg",
-  },
+  // icons: {
+  //   pathname: "/plane.png",
+  //   icon: "/plane.png",
+  // },
 };
 
 export default function RootLayout({
@@ -53,8 +55,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster position="top-right" />
+          <LenisProvider>
+            {children}
+            <Toaster position="top-right" />
+          </LenisProvider>
         </ThemeProvider>
       </body>
     </html>

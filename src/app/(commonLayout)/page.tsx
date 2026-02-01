@@ -8,6 +8,8 @@ import { LogoCloud } from "@/components/features/Home/logo-cloud";
 import { TestimonialsMarqueeDemo2 } from "@/components/features/Home/Testimonials";
 import { RevealOnScroll } from "@/components/shared/reveal-on-scroll";
 import PopularTutors from "@/components/features/Home/PopularTutor";
+import { Skiper19 } from "@/components/features/Home/SVG";
+import HowItWorksSection from "@/components/features/Home/HowItWorks";
 
 export default async function Home() {
   return (
@@ -29,15 +31,28 @@ export default async function Home() {
             </div>
           </div>
 
-          <RevealOnScroll>
-            <FeaturedCategory />
-          </RevealOnScroll>
-          <RevealOnScroll>
-            <PopularTutors />
-          </RevealOnScroll>
-          <RevealOnScroll>
-            <TestimonialsMarqueeDemo2 />
-          </RevealOnScroll>
+          {/* Sections Container with Consistent Spacing */}
+          <div className="space-y-16 md:space-y-24 pb-16">
+            <RevealOnScroll effect="zoomIn">
+              <FeaturedCategory />
+            </RevealOnScroll>
+            <RevealOnScroll>
+              <PopularTutors />
+            </RevealOnScroll>
+            <RevealOnScroll>
+              <TestimonialsMarqueeDemo2 />
+            </RevealOnScroll>
+          </div>
+
+          {/* Desktop Only */}
+          <div className="hidden md:block">
+            <Skiper19 />
+          </div>
+
+          {/*  Mobile Only */}
+          <div className="block md:hidden">
+            <HowItWorksSection />
+          </div>
         </section>
       </main>
     </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { Check, MessageSquare } from "lucide-react";
@@ -37,27 +37,46 @@ interface SessionsTableProps {
 
 export function SessionsTable({ bookings, role }: SessionsTableProps) {
   const router = useRouter();
+  const [localBookings, setLocalBookings] = useState<Booking[]>(bookings);
   const [selectedBookingId, setSelectedBookingId] = useState<string | null>(
     null,
   );
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    setLocalBookings(bookings);
+  }, [bookings]);
+
   const handleMarkComplete = async (id: string) => {
+    // Optimistic Update
+    const previousBookings = [...localBookings];
+    setLocalBookings((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, status: "completed" } : b)),
+    );
+    const toastId = toast.loading("Updating session...");
+
     try {
       const res = await updateBookingStatus(id, "completed");
       if (res.success) {
-        toast.success("Session marked as completed");
-        router.refresh();
+        toast.success("Session marked as completed", { id: toastId });
+        startTransition(() => {
+          router.refresh();
+        });
       } else {
-        toast.error(res.message || "Failed to update session");
+        // Revert on failure
+        setLocalBookings(previousBookings);
+        toast.error(res.message || "Failed to update session", { id: toastId });
       }
     } catch (error) {
-      toast.error("An error occurred");
+      // Revert on error
+      setLocalBookings(previousBookings);
+      toast.error("An error occurred", { id: toastId });
     }
   };
 
@@ -65,7 +84,7 @@ export function SessionsTable({ bookings, role }: SessionsTableProps) {
   const now = new Date();
 
   // upcoming bookings calculation
-  const upcomingBookings = bookings.filter((b) => {
+  const upcomingBookings = localBookings.filter((b) => {
     if (b.status !== "confirmed") return false;
     const end = new Date(b.endTime);
     const sessionDate = new Date(b.sessionDate);
@@ -80,7 +99,7 @@ export function SessionsTable({ bookings, role }: SessionsTableProps) {
   });
 
   // past bookings calculation
-  const pastBookings = bookings.filter((b) => {
+  const pastBookings = localBookings.filter((b) => {
     if (b.status === "completed" || b.status === "cancelled") return true;
     if (b.status === "confirmed") {
       const end = new Date(b.endTime);
