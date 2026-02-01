@@ -32,8 +32,9 @@ import { getAllCategories } from "@/service/category.service";
 /**
  * TYPES
  */
-import { Category } from "@/types/types";
+
 import { toast } from "sonner";
+import { Category } from "@/types/category.types";
 
 const Hero = () => {
   const router = useRouter();

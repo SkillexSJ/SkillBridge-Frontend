@@ -37,24 +37,24 @@ async function fetcher<T>(
   };
 
   const config: RequestInit = {
-    cache: "no-store", // default to no-store
     ...rest,
+    cache: rest.cache ?? "no-store", // default
     headers: defaultHeaders,
     credentials: "include",
   };
 
-  // Fix URL Slash logic
+  //  URL Slash logic
   const baseUrl = env.API_URL.replace(/\/+$/, "");
   const url = `${baseUrl}/${cleanPath(endpoint)}`;
 
   try {
     const response = await fetch(url, config);
 
-    // SAFE JSON PARSING
+    // JSON PARSING
     let data: any = null;
     const contentType = response.headers.get("content-type");
 
-    // Only parse JSON
+    // parse JSON strict
     if (contentType && contentType.includes("application/json")) {
       try {
         data = await response.json();

@@ -38,12 +38,9 @@ import {
 } from "@/components/ui/select";
 
 import { cn } from "@/lib/utils";
-import {
-  createTutorProfile,
-  updateTutorAvailability,
-} from "@/service/tutor.service";
-import { getAllCategories } from "@/service/category.service";
-import { Category } from "@/types/category.types";
+import { createTutorProfile } from "@/service/tutor.service";
+import { useCachedCategories } from "@/hooks/useCategories";
+import { revalidateTutors } from "@/actions/revalidate";
 
 // --- 1. ZOD SCHEMA (Centralized Validation) ---
 const tutorFormSchema = z.object({
@@ -112,7 +109,7 @@ const fadeInUp = {
 export default function MultiStepTutorForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { categories } = useCachedCategories();
   const [tagInput, setTagInput] = useState("");
 
   // --- 2. REACT HOOK FORM SETUP ---
@@ -147,18 +144,6 @@ export default function MultiStepTutorForm() {
   });
 
   const currentExpertise = watch("expertise");
-
-  useEffect(() => {
-    async function fetchCats() {
-      try {
-        const res = await getAllCategories();
-        if (Array.isArray(res.data)) setCategories(res.data);
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    fetchCats();
-  }, []);
 
   // --- 3. TAG HANDLING ---
   const addTag = () => {
@@ -215,6 +200,9 @@ export default function MultiStepTutorForm() {
         socialLinks: [],
         availability: data.availability,
       });
+
+      //! NEW
+      await revalidateTutors();
 
       toast.success("Profile created successfully!");
       document.cookie = "intended_role=; path=/; max-age=0";
