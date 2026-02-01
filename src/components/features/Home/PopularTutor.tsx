@@ -24,7 +24,7 @@ import { getAllCategories } from "@/service/category.service";
  * TYPES
  */
 import { TutorResponse } from "@/types/tutor.types";
-import { Category } from "@/types/types";
+import { Category } from "@/types/category.types";
 
 const PopularTutors: React.FC = () => {
   // states

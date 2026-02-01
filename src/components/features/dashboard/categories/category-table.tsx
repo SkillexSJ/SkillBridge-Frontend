@@ -39,7 +39,8 @@ import { deleteCategory, getAllCategories } from "@/service/category.service";
 /**
  * TYPES
  */
-import { Category } from "@/types/types";
+
+import { Category } from "@/types/category.types";
 
 /**
  * UTILS
