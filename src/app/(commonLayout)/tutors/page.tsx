@@ -1,5 +1,5 @@
 import TutorCatalog from "@/components/features/tutor/catalog/TutorCatalog";
-import React from "react";
+
 export default function TutorsPage() {
   return (
     <>

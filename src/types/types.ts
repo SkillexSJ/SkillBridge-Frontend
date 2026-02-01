@@ -25,7 +25,6 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
-  // isVerified: boolean;
   emailVerified: boolean;
   isBlocked: boolean;
   image?: string;
@@ -48,6 +47,9 @@ export interface Booking {
       name: string;
       email: string;
       image?: string;
+    };
+    category?: {
+      name: string;
     };
   };
   sessionDate: string; // ISO Date string

@@ -41,9 +41,9 @@ export function TestimonialsMarqueeDemo2() {
             <MarqueeFade side="right" />
 
             <MarqueeContent direction={index % 2 === 1 ? "right" : "left"}>
-              {list.map((item) => (
+              {list.map((item, i) => (
                 <MarqueeItem
-                  key={item.url}
+                  key={i}
                   className="mx-0 h-full w-xs border-r border-edge"
                 >
                   <a

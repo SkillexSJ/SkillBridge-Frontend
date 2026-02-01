@@ -23,6 +23,7 @@
     "@react-bits": "https://reactbits.dev/r/{name}.json",
     "@coss": "https://coss.com/ui/r/{name}.json",
     "@ncdai": "https://chanhdai.com/r/{name}.json",
-    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json"
+    "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
+    "@spectrumui": "https://ui.spectrumhq.in/r/{name}.json"
   }
 }
