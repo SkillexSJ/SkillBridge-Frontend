@@ -58,10 +58,11 @@ export function Header({ initialSession }: HeaderProps) {
   const router = useRouter();
 
   //  hydration fix
-  const session =
+  const session = (
     sessionData === undefined && initialSession !== undefined
       ? initialSession
-      : (sessionData ?? initialSession);
+      : (sessionData ?? initialSession)
+  ) as Session | null;
 
   const isPending = isPendingHook && initialSession === undefined;
 
@@ -104,15 +105,18 @@ export function Header({ initialSession }: HeaderProps) {
             </Link>
           ))}
           {/* Become a Tutor CTA - Desktop */}
-          <Link
-            href="/onboarding/tutor"
-            className={cn(
-              buttonVariants({ variant: "secondary" }),
-              "rounded-full p-2 font-semibold text-primary bg-primary/10 hover:bg-primary/20 transition-colors border border-primary/20",
-            )}
-          >
-            Become a Tutor
-          </Link>
+          {/* Become a Tutor CTA - Desktop */}
+          {session?.user.role !== "tutor" && (
+            <Link
+              href="/onboarding/tutor"
+              className={cn(
+                buttonVariants({ variant: "secondary" }),
+                "rounded-full p-2 font-semibold text-primary bg-primary/10 hover:bg-primary/20 transition-colors border border-primary/20",
+              )}
+            >
+              Become a Tutor
+            </Link>
+          )}
 
           <ThemeToggle />
 
@@ -219,15 +223,18 @@ export function Header({ initialSession }: HeaderProps) {
         </div>
         <div className="flex items-center gap-2 md:hidden">
           {/* Become a Tutor CTA - Mobile */}
-          <Link
-            href="/onboarding/tutor"
-            className={cn(
-              buttonVariants({ variant: "secondary", size: "sm" }),
-              "rounded-full text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 h-8 px-3",
-            )}
-          >
-            Become a Tutor
-          </Link>
+          {/* Become a Tutor CTA - Mobile */}
+          {session?.user.role !== "tutor" && (
+            <Link
+              href="/onboarding/tutor"
+              className={cn(
+                buttonVariants({ variant: "secondary", size: "sm" }),
+                "rounded-full text-xs font-semibold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 h-8 px-3",
+              )}
+            >
+              Become a Tutor
+            </Link>
+          )}
           <ThemeToggle />
           <MobileNav />
         </div>
