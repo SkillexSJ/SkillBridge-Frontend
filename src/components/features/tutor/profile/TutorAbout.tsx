@@ -32,22 +32,6 @@ export const TutorAbout: React.FC<TutorAboutProps> = ({
         <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-lg">
           {tutor.bio}
         </p>
-
-        {tutor.socialLinks && tutor.socialLinks.length > 0 && (
-          <div className="flex flex-wrap gap-3 mt-8">
-            {tutor.socialLinks.map((link: any, index: number) => (
-              <a
-                key={index}
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors bg-accent/50 hover:bg-accent px-4 py-2 rounded-lg border border-border"
-              >
-                <Globe className="w-4 h-4" /> {link.platform || "Link"}
-              </a>
-            ))}
-          </div>
-        )}
       </section>
 
       {/* Profile Insights */}
