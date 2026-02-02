@@ -15,8 +15,6 @@
     <a href="https://nextjs.org">
       <img src="https://img.shields.io/badge/Next.js-16.1.4-black?style=for-the-badge&logo=next.js" alt="Next.js" />
     </a>
-    <a href="https://react.dev">
-      <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" />
     </a>
     <a href="https://www.typescriptlang.org/">
       <img src="https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript" alt="TypeScript" />
@@ -25,7 +23,7 @@
       <img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css" alt="Tailwind CSS" />
     </a>
     <a href="https://ui.shadcn.com/">
-      <img src="https://img.shields.io/badge/shadcn%2Fui-New_York-000000?style=for-the-badge&logo=shadcnui&logoColor=white" alt="Shadcn UI" />
+      <img src="https://img.shields.io/badge/shadcn%2Fui_-000000?style=for-the-badge&logo=shadcnui&logoColor=white" alt="Shadcn UI" />
     </a>
   </p>
 
@@ -115,7 +113,7 @@ The core experience of Skill Bridge revolves around a frictionless booking proce
 graph TD
     A[🔍 Find Tutor] --> B[📅 Book Session]
     B --> C{✅ Approval}
-    C --> D[🎓 Live Class]
+    C --> D[🎓 Do Class]
     D --> E[⭐ Rate & Review]
 
     style A fill:#f9f9f9,stroke:#333,stroke-width:1px,color:#000
