@@ -42,9 +42,7 @@ import { TutorResponse, TutorMeta } from "@/types/tutor.types";
 import { toast } from "sonner";
 import { useCachedCategories } from "@/hooks/useCategories";
 
-/**
- * INTERFACES
- */
+// INTERFACES
 interface TutorCatalogProps {
   initialCategory?: string;
 }
@@ -54,17 +52,19 @@ interface FilterState {
   activeCategory: string;
   searchQuery: string;
   sortBy: "experience" | "price_asc" | "price_desc" | "rating";
-  filterAvailability: string;
   minPrice: number | "";
   maxPrice: number | "";
   currentPage: number;
 }
+
 // Filter action
 type FilterAction =
   | { type: "SET_CATEGORY"; payload: string }
   | { type: "SET_SEARCH"; payload: string }
-  | { type: "SET_SORT"; payload: FilterState["sortBy"] }
-  | { type: "SET_AVAILABILITY"; payload: string }
+  | {
+      type: "SET_SORT";
+      payload: "experience" | "price_asc" | "price_desc" | "rating";
+    }
   | { type: "SET_MIN_PRICE"; payload: number | "" }
   | { type: "SET_MAX_PRICE"; payload: number | "" }
   | { type: "SET_PAGE"; payload: number }
@@ -79,8 +79,6 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
       return { ...state, searchQuery: action.payload, currentPage: 1 };
     case "SET_SORT":
       return { ...state, sortBy: action.payload, currentPage: 1 };
-    case "SET_AVAILABILITY":
-      return { ...state, filterAvailability: action.payload, currentPage: 1 };
     case "SET_MIN_PRICE":
       return { ...state, minPrice: action.payload, currentPage: 1 };
     case "SET_MAX_PRICE":
@@ -92,7 +90,6 @@ function filterReducer(state: FilterState, action: FilterAction): FilterState {
         activeCategory: "All Tutors",
         searchQuery: "",
         sortBy: "experience",
-        filterAvailability: "any",
         minPrice: "",
         maxPrice: "",
         currentPage: 1,
@@ -113,7 +110,6 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
     activeCategory: urlCategory || initialCategory || "All Tutors",
     searchQuery: urlSearch || "",
     sortBy: "experience", // Default sort
-    filterAvailability: "any",
     minPrice: "",
     maxPrice: "",
     currentPage: 1,
@@ -177,10 +173,6 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
           minPrice: filters.minPrice === "" ? undefined : filters.minPrice,
           maxPrice: filters.maxPrice === "" ? undefined : filters.maxPrice,
           sortBy: filters.sortBy,
-          availability:
-            filters.filterAvailability === "any"
-              ? undefined
-              : filters.filterAvailability,
         });
 
         if (response.success && response.data) {
@@ -244,9 +236,6 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
             | "price_desc"
             | "rating",
         });
-        break;
-      case "availability":
-        dispatch({ type: "SET_AVAILABILITY", payload: value as string });
         break;
       case "minPrice":
         dispatch({ type: "SET_MIN_PRICE", payload: value as number | "" });
@@ -326,10 +315,6 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
                       onSortChange={(value) =>
                         handleFilterChange("sort", value)
                       }
-                      filterAvailability={filters.filterAvailability}
-                      onAvailabilityChange={(value) =>
-                        handleFilterChange("availability", value)
-                      }
                       layout="vertical"
                     />
                     <PriceFilter
@@ -355,10 +340,6 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
                 onSearchChange={(value) => handleFilterChange("search", value)}
                 sortBy={filters.sortBy}
                 onSortChange={(value) => handleFilterChange("sort", value)}
-                filterAvailability={filters.filterAvailability}
-                onAvailabilityChange={(value) =>
-                  handleFilterChange("availability", value)
-                }
               />
               <PriceFilter
                 minPrice={filters.minPrice}

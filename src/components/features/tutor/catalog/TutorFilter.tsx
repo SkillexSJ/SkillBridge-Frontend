@@ -37,8 +37,6 @@ interface TutorFilterProps {
   onSortChange: (
     s: "experience" | "price_asc" | "price_desc" | "rating",
   ) => void;
-  filterAvailability: string;
-  onAvailabilityChange: (a: string) => void;
   layout?: "horizontal" | "vertical";
 }
 
@@ -47,8 +45,6 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
   onSearchChange,
   sortBy,
   onSortChange,
-  filterAvailability,
-  onAvailabilityChange,
   layout = "horizontal",
 }) => {
   const isVertical = layout === "vertical";
@@ -128,28 +124,6 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
                   </RadioGroup>
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="availability">
-                <AccordionTrigger>Availability</AccordionTrigger>
-                <AccordionContent>
-                  <RadioGroup
-                    value={filterAvailability}
-                    onValueChange={onAvailabilityChange}
-                  >
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="any" id="avail-any" />
-                      <Label htmlFor="avail-any">Any Availability</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="today" id="avail-today" />
-                      <Label htmlFor="avail-today">Available Today</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="weekend" id="avail-weekend" />
-                      <Label htmlFor="avail-weekend">Weekends Only</Label>
-                    </div>
-                  </RadioGroup>
-                </AccordionContent>
-              </AccordionItem>
             </Accordion>
           ) : (
             <>
@@ -197,49 +171,6 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
                       className="focus:bg-accent focus:text-accent-foreground"
                     >
                       Price: High to Low
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-              {/* Availability Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="h-12 rounded-xl border-input bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground px-4 justify-between min-w-45"
-                  >
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      <span>Availability</span>
-                    </div>
-                    <ChevronDown className="w-4 h-4 opacity-50 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-popover border-border text-popover-foreground">
-                  <DropdownMenuLabel>Availability</DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-border" />
-                  <DropdownMenuRadioGroup
-                    value={filterAvailability}
-                    onValueChange={onAvailabilityChange}
-                  >
-                    <DropdownMenuRadioItem
-                      value="any"
-                      className="focus:bg-accent focus:text-accent-foreground"
-                    >
-                      Any Availability
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value="today"
-                      className="focus:bg-accent focus:text-accent-foreground"
-                    >
-                      Available Today
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value="weekend"
-                      className="focus:bg-accent focus:text-accent-foreground"
-                    >
-                      Weekends Only
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
