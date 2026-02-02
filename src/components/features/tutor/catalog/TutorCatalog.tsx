@@ -177,6 +177,10 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
           minPrice: filters.minPrice === "" ? undefined : filters.minPrice,
           maxPrice: filters.maxPrice === "" ? undefined : filters.maxPrice,
           sortBy: filters.sortBy,
+          availability:
+            filters.filterAvailability === "any"
+              ? undefined
+              : filters.filterAvailability,
         });
 
         if (response.success && response.data) {

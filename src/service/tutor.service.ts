@@ -34,6 +34,8 @@ export const getAllTutors = async (
   if (params?.maxPrice)
     queryParams.append("maxPrice", params.maxPrice.toString());
   if (params?.sortBy) queryParams.append("sortBy", params.sortBy);
+  if (params?.availability && params.availability !== "any")
+    queryParams.append("availability", params.availability);
 
   const queryString = queryParams.toString();
   const endpoint = `/tutors${queryString ? `?${queryString}` : ""}`;

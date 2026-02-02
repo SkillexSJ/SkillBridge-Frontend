@@ -106,4 +106,5 @@ export interface GetAllTutorsParams {
   minPrice?: number;
   maxPrice?: number;
   sortBy?: string;
+  availability?: string;
 }
