@@ -40,7 +40,8 @@ import { getAllTutors } from "@/service/tutor.service";
 import { TutorResponse, TutorMeta } from "@/types/tutor.types";
 
 import { toast } from "sonner";
-import { useCachedCategories } from "@/hooks/useCategories";
+import { getAllCategories } from "@/service/category.service";
+import { Category } from "@/types/category.types";
 
 /**
  * INTERFACES
@@ -122,7 +123,21 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
   // Data states
   const [tutors, setTutors] = useState<TutorResponse[]>([]);
   // Use cached categories hook
-  const { categories } = useCachedCategories();
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getAllCategories();
+        if (response.success && response.data) {
+          setCategories(response.data);
+        }
+      } catch (error) {
+        toast.error("Failed to load categories");
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const [meta, setMeta] = useState<TutorMeta>({ page: 1, limit: 12, total: 0 });
   const [loading, setLoading] = useState(true);
