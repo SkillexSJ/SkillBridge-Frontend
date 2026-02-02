@@ -105,8 +105,8 @@ export function Header({ initialSession }: HeaderProps) {
             </Link>
           ))}
           {/* Become a Tutor CTA - Desktop */}
-          {/* Become a Tutor CTA - Desktop */}
-          {session?.user.role !== "tutor" && (
+          {(session?.user.role === "student" ||
+            session?.user.role === "admin") && (
             <Link
               href="/onboarding/tutor"
               className={cn(
@@ -224,7 +224,8 @@ export function Header({ initialSession }: HeaderProps) {
         <div className="flex items-center gap-2 md:hidden">
           {/* Become a Tutor CTA - Mobile */}
           {/* Become a Tutor CTA - Mobile */}
-          {session?.user.role !== "tutor" && (
+          {(session?.user.role === "student" ||
+            session?.user.role === "admin") && (
             <Link
               href="/onboarding/tutor"
               className={cn(
