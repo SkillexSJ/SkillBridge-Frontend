@@ -86,6 +86,11 @@ export const TutorFilter: React.FC<TutorFilterProps> = ({
             className="w-full bg-background border-input text-foreground pl-12 pr-4 h-12 rounded-xl focus-visible:ring-primary/50"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                onSearchChange(inputValue);
+              }
+            }}
           />
         </div>
 

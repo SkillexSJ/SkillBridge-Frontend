@@ -3,15 +3,7 @@
  * NODE PACKAGES
  */
 import { useState, useEffect, useRef } from "react";
-import {
-  ArrowRight,
-  Search,
-  Star,
-  Users,
-  ArrowUpRight,
-  Layout,
-  Loader2,
-} from "lucide-react";
+import { ArrowRight, Search, Star, Users, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -35,6 +27,7 @@ import { getAllCategories } from "@/service/category.service";
 
 import { toast } from "sonner";
 import { Category } from "@/types/category.types";
+import GlowingBorderButton from "../shared/shimmerButton";
 
 const Hero = () => {
   const router = useRouter();
@@ -95,7 +88,7 @@ const Hero = () => {
   // Handle search
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      router.push(`/tutors?search=${encodeURIComponent(searchQuery)}`);
+      router.push(`/tutors?category=${encodeURIComponent(searchQuery)}`);
     } else {
       router.push("/tutors");
     }
@@ -165,7 +158,7 @@ const Hero = () => {
 
                 {/* Autocomplete Dropdown */}
                 {showSuggestions && suggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-4 w-full bg-popover border border-border rounded-xl shadow-lg overflow-hidden z-60">
+                  <div className="absolute hidden md:block top-full left-0 right-0 mt-4 w-full bg-popover border border-border rounded-xl shadow-lg overflow-hidden z-60">
                     <div className="p-2">
                       <p className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                         Suggested Categories
@@ -187,10 +180,17 @@ const Hero = () => {
             </div>
             <button
               onClick={handleSearch}
-              className="w-full md:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-3 rounded-xl md:rounded-full transition-all shadow-lg shadow-primary/20 active:scale-95"
+              className="w-1/2 rounded-b-full md:hidden bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-3 rounded-xl transition-all shadow-lg shadow-primary/20 active:scale-95"
             >
               Search
             </button>
+            <GlowingBorderButton
+              key={"search-button"}
+              onClick={handleSearch}
+              className="hidden md:block"
+            >
+              Search
+            </GlowingBorderButton>
           </div>
         </div>
       </section>

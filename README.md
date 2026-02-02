@@ -155,18 +155,17 @@ This project is built with a modular UI architecture, leveraging **shadcn/ui** f
 The core experience of Skill Bridge revolves around a frictionless booking process:
 
 ```mermaid
-graph LR
-    A[🔍 Discovery] -->|Filter & Search| B[📄 View Profile]
-    B -->|Check Calendar| C[📅 Select Slot]
-    C -->|Request Session| D{📝 Status: Pending}
-    D -->|Tutor Action| E[✅ Tutor Approves]
-    E -->|Status: Confirmed| F[🎓 Live Session]
-    F -->|Feedback| G[⭐ Leave Review]
+graph TD
+    A[🔍 Find Tutor] --> B[📅 Book Session]
+    B --> C{✅ Approval}
+    C --> D[🎓 Live Class]
+    D --> E[⭐ Rate & Review]
 
-    style A fill:#f9f9f9,stroke:#333,stroke-width:1px
-    style D fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
-    style E fill:#e8f5e9,stroke:#4caf50,stroke-width:2px
-    style G fill:#fff3e0,stroke:#ff9800,stroke-width:1px
+    style A fill:#f9f9f9,stroke:#333,stroke-width:1px,color:#000
+    style B fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
+    style C fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000
+    style D fill:#e8f5e9,stroke:#4caf50,stroke-width:2px,color:#000
+    style E fill:#fff3e0,stroke:#ff9800,stroke-width:1px,color:#000
 ```
 
 ---

@@ -1,8 +1,7 @@
 "use client";
 
-
 /**
- * USED "UseReducer" for filter in this component for better filtering 
+ * USED "UseReducer" for filter in this component for better filtering
  */
 
 /**
@@ -156,9 +155,18 @@ const TutorCatalog: React.FC<TutorCatalogProps> = ({ initialCategory }) => {
         // Get category ID
         if (filters.activeCategory !== "All Tutors") {
           const category = categories.find(
-            (c) => c.name === filters.activeCategory,
+            (c) =>
+              c.name.toLowerCase() === filters.activeCategory.toLowerCase(),
           );
-          categoryId = category?.id;
+
+          if (!category) {
+            setTutors([]);
+            setMeta({ page: 1, limit: 12, total: 0 });
+            setLoading(false);
+            return;
+          }
+
+          categoryId = category.id;
         }
 
         const response = await getAllTutors({
