@@ -10,6 +10,8 @@ export default async function ProfileRedirectPage() {
 
   if (user.role === "tutor") {
     redirect("/tutor/profile");
+  } else if (user.role === "admin") {
+    redirect("/admin/profile");
   } else {
     redirect("/dashboard/profile");
   }

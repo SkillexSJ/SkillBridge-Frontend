@@ -53,6 +53,11 @@ export const dashboardConfig = {
         url: "/tutor/availability",
         icon: IconClock,
       },
+      {
+        title: "Profile",
+        url: "/tutor/profile",
+        icon: IconUserCircle,
+      },
     ],
   },
   admin: {
@@ -76,6 +81,11 @@ export const dashboardConfig = {
         title: "Categories",
         url: "/admin/categories",
         icon: IconCategory,
+      },
+      {
+        title: "Profile",
+        url: "/admin/profile",
+        icon: IconUserCircle,
       },
     ],
   },
