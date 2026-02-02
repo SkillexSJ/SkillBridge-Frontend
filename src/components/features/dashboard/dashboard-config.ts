@@ -49,11 +49,6 @@ export const dashboardConfig = {
         icon: IconCalendarEvent,
       },
       {
-        title: "My Students",
-        url: "/tutor/students",
-        icon: IconUsers,
-      },
-      {
         title: "Availability",
         url: "/tutor/availability",
         icon: IconClock,
@@ -81,11 +76,6 @@ export const dashboardConfig = {
         title: "Categories",
         url: "/admin/categories",
         icon: IconCategory,
-      },
-      {
-        title: "Analytics",
-        url: "/admin/analytics",
-        icon: IconChartBar,
       },
     ],
   },
