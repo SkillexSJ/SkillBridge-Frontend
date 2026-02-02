@@ -21,7 +21,7 @@ export const getCachedPopularTutors = unstable_cache(
   },
   ["popular-tutors"],
   {
-    revalidate: 300,
+    revalidate: 60,
     tags: ["tutors", "popular"],
   },
 );
@@ -41,7 +41,7 @@ export const getCachedCategories = unstable_cache(
   },
   ["all-categories"],
   {
-    revalidate: 3600, // 1 hour
+    revalidate: 60, // 1 minute
     tags: ["categories"],
   },
 );

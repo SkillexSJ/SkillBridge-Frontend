@@ -12,9 +12,7 @@ export function useCachedCategories() {
       try {
         setLoading(true);
 
-        const res = await fetch("/api/cache/categories", {
-          next: { revalidate: 3600 },
-        });
+        const res = await fetch("/api/cache/categories");
 
         const data = await res.json();
 

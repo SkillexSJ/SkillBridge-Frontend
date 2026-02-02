@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function revalidateTutors() {
   // Clear the home page cache
@@ -10,6 +10,7 @@ export async function revalidateTutors() {
 }
 
 export async function revalidateCategories() {
+  revalidateTag("categories", "max");
   revalidatePath("/", "page"); // Clear home page
   revalidatePath("/api/cache/categories");
 }
