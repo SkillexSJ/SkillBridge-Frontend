@@ -31,7 +31,7 @@ export const getCachedPopularTutors = unstable_cache(
  */
 export const getCachedCategories = unstable_cache(
   async () => {
-    const response = await getAllCategories();
+    const response = await getAllCategories({ limit: 1000 });
 
     if (!response.success) {
       throw new Error("Failed to fetch categories");

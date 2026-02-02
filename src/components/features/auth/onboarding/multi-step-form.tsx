@@ -39,8 +39,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { createTutorProfile } from "@/service/tutor.service";
-import { getAllCategories } from "@/service/category.service";
-import { Category } from "@/types/category.types";
+import { useCachedCategories } from "@/hooks/useCategories";
 import { revalidateTutors } from "@/actions/revalidate";
 
 // --- 1. ZOD SCHEMA (Centralized Validation) ---
@@ -110,21 +109,7 @@ const fadeInUp = {
 export default function MultiStepTutorForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await getAllCategories();
-        if (response.success && response.data) {
-          setCategories(response.data);
-        }
-      } catch (error) {
-        toast.error("Failed to load categories");
-      }
-    };
-    fetchCategories();
-  }, []);
+  const { categories } = useCachedCategories();
   const [tagInput, setTagInput] = useState("");
 
   // --- 2. REACT HOOK FORM SETUP ---
