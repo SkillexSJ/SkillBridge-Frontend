@@ -116,6 +116,10 @@ export function SessionsTable({ bookings, role }: SessionsTableProps) {
     return false;
   });
 
+  const pendingReviewsCount = pastBookings.filter(
+    (b) => b.status === "completed" && !b.review,
+  ).length;
+
   const renderTable = (data: Booking[], type: "upcoming" | "past") => (
     <div className="rounded-md border">
       <Table>
@@ -204,16 +208,30 @@ export function SessionsTable({ bookings, role }: SessionsTableProps) {
 
                     {/* Student Actions */}
                     {role === "student" && booking.status === "completed" && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedBookingId(booking.id);
-                          setIsReviewModalOpen(true);
-                        }}
-                      >
-                        <MessageSquare className="h-3 w-3 mr-1" /> Review
-                      </Button>
+                      <div className="flex justify-end">
+                        {!booking.review ? (
+                          <div className="relative inline-block">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                setSelectedBookingId(booking.id);
+                                setIsReviewModalOpen(true);
+                              }}
+                            >
+                              <MessageSquare className="h-3 w-3 mr-1" /> Review
+                            </Button>
+                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            </span>
+                          </div>
+                        ) : (
+                          <Button size="sm" variant="ghost" disabled>
+                            <Check className="h-3 w-3 mr-1" /> Reviewed
+                          </Button>
+                        )}
+                      </div>
                     )}
                   </TableCell>
                 </TableRow>
@@ -255,7 +273,15 @@ export function SessionsTable({ bookings, role }: SessionsTableProps) {
               <TabsTrigger value="upcoming">
                 Upcoming ({upcomingBookings.length})
               </TabsTrigger>
-              <TabsTrigger value="past">Past History</TabsTrigger>
+              <TabsTrigger value="past" className="relative overflow-visible">
+                Past History
+                {role === "student" && pendingReviewsCount > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                )}
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="upcoming">
               {renderTable(upcomingBookings, "upcoming")}

@@ -25,6 +25,9 @@ export interface Booking {
   status: BookingStatus;
   totalPrice: number;
   createdAt: string;
+  review?: {
+    id: string;
+  };
 }
 
 export interface GetBookingsParams {
