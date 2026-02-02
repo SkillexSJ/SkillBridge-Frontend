@@ -90,52 +90,9 @@ Whether you want to master a new language, crack a coding interview, or learn to
 
 <br />
 
-## 🧩 UI Component Libraries & Utilities
-
-This project is built with a modular UI architecture, leveraging **shadcn/ui** for accessible primitives and specialized libraries for animations and data.
-
-### **Installed shadcn/ui Components**
-
-<details>
-<summary>Click to view all components</summary>
-<br/>
-<div style="display: flex; flex-wrap: wrap; gap: 5px;">
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Accordion</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Alert Dialog</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Avatar</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Badge</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Breadcrumb</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Button</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Calendar</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Card</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Chart</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Checkbox</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Command</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Dialog</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Drawer</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Dropdown Menu</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Form</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Input</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Label</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Popover</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Radio Group</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Select</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Separator</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Sheet</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Sidebar</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Skeleton</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Sonner</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Table</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Tabs</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Textarea</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Toggle</span>
-  <span style="padding: 2px 8px; border-radius: 4px; background-color: #f0f0f0; color: #333; font-size: 0.8rem; border: 1px solid #ddd;">Tooltip</span>
-</div>
-</details>
-
 <br />
 
-### **Key Libraries**
+### **🧩 Key UI Libraries**
 
 | Library                      | Purpose                                      |
 | :--------------------------- | :------------------------------------------- |
@@ -233,7 +190,6 @@ Follow these steps to set up the project locally.
 
 5.  **Open the app:**
     Visit `http://localhost:3000` in your browser.
-
 
 ---
 
