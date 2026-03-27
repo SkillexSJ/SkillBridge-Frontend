@@ -4,10 +4,8 @@
 
   <br />
   <br />
-
-  <h1 style="font-size: 3rem; font-weight: bold; margin-bottom: 0;">Skill Bridge</h1>
   
-  <p style="font-size: 1.5rem; font-style: italic; color: #666;">
+  <p style="font-size: 1.5rem; font-style: italic; color: #fff;">
     "Connect with Expert Tutors, Learn Anything"
   </p>
 
